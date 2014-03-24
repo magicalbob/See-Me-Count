@@ -11,7 +11,7 @@
 @interface ViewController () {
     AVAudioRecorder *recorder1;
     AVAudioPlayer *playerPersonal1;
-    AVAudioPlayer *playerCongratulations;
+	AVAudioPlayer *playerSuccess;
     AVAudioPlayer *playerIntro;
     AVAudioPlayer *playerWellDone;
 }
@@ -127,12 +127,12 @@
 @synthesize playWD4;
 @synthesize deleteWD4;
 
+@synthesize infoView;
 
-int correctNum;
-int randPic;
-int currentTune;
-int playIntro;
-int playSetup;
+@synthesize infoViewSess;
+@synthesize infoViewGame;
+@synthesize infoViewSessByGames;
+@synthesize infoViewRightWrong;
 
 - (void) myInit {
     
@@ -143,17 +143,16 @@ int playSetup;
     /* Randomise the timer, and select which of the buttons will have the correct picture */
     srand((unsigned int)time(NULL));
     
-    //correctNum=rand() % 9 + 1;
-
-    lastPic=randPic;
-    do {
-        randPic=rand() % 9 + 1;
-    } while (randPic==lastPic);
-    correctNum=randPic;
     
-    sprintf(randPicNameC,"Pic%01d",randPic);
+    
+    lastPic=correctNum;
+    do {
+        correctNum=rand() % 9 + 1;
+    } while (correctNum==lastPic);
+    
+    sprintf(randPicNameC,"Pic%01d",correctNum);
     NSString *randPicName = [NSString stringWithUTF8String:randPicNameC];
-
+    
     cPath = [[NSBundle mainBundle] pathForResource:randPicName ofType:@"jpg"];
     
     picture1.image = [UIImage imageWithContentsOfFile:cPath];
@@ -165,7 +164,7 @@ int playSetup;
     } else {
         picture2.hidden=true;
     }
-
+    
     if (correctNum>2) {
         picture3.image = [UIImage imageWithContentsOfFile:cPath];
         picture3.hidden=false;
@@ -179,42 +178,42 @@ int playSetup;
     } else {
         picture4.hidden=true;
     }
-
+    
     if (correctNum>4) {
         picture5.image = [UIImage imageWithContentsOfFile:cPath];
         picture5.hidden=false;
     } else {
         picture5.hidden=true;
     }
-
+    
     if (correctNum>5) {
         picture6.image = [UIImage imageWithContentsOfFile:cPath];
         picture6.hidden=false;
     } else {
         picture6.hidden=true;
     }
-
+    
     if (correctNum>6) {
         picture7.image = [UIImage imageWithContentsOfFile:cPath];
         picture7.hidden=false;
     } else {
         picture7.hidden=true;
     }
-
+    
     if (correctNum>7) {
         picture8.image = [UIImage imageWithContentsOfFile:cPath];
         picture8.hidden=false;
     } else {
         picture8.hidden=true;
     }
-
+    
     if (correctNum>8) {
         picture9.image = [UIImage imageWithContentsOfFile:cPath];
         picture9.hidden=false;
     } else {
         picture9.hidden=true;
     }
-
+    
     [number1 setEnabled:NO];
     [number2 setEnabled:NO];
     [number3 setEnabled:NO];
@@ -224,7 +223,7 @@ int playSetup;
     [number7 setEnabled:NO];
     [number8 setEnabled:NO];
     [number9 setEnabled:NO];
-
+    
     NSString *pathIntro;
     //Load recording path from preferences
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
@@ -264,20 +263,23 @@ int playSetup;
         [self buttonPlayN:correctNum isPlaySetup:0];
     } else {
         char randIntroNameC[10];
-    
-        sprintf(randIntroNameC,"introP%01dC%01d",randPic,correctNum);
-    
+        
+        sprintf(randIntroNameC,"introP%01d",correctNum);
+        
         NSString *randIntroName = [NSString stringWithUTF8String:randIntroNameC];
-    
+        
         pathIntro = [[NSBundle mainBundle] pathForResource:randIntroName ofType:@"mp3"];
-    
+        
         playerIntro = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:pathIntro] error:nil];
-
+        
         [playerIntro setDelegate:self];
         [playerIntro play];
     }
     
     playIntro=1;
+
+	// Get new game ID details for storing in database
+	currGameID++;
 }
 
 - (void)mySuccess {
@@ -292,8 +294,7 @@ int playSetup;
     [number7 setEnabled:NO];
     [number8 setEnabled:NO];
     [number9 setEnabled:NO];
-    [playerCongratulations setDelegate:self];
-    [playerCongratulations play];
+	[self playSuccessTune];
     [self myAnimationOne];
 }
 
@@ -363,7 +364,7 @@ int playSetup;
                      completion:^(BOOL finished)
      {
      }];
-
+    
     [UIView animateWithDuration:4
                           delay:0
                         options:UIViewAnimationOptionCurveEaseIn
@@ -526,12 +527,40 @@ int playSetup;
      }];
 }
 
+/*
+- (void) stopAllTasks {
+    if ([playerPersonal1 isPlaying]) {
+        [playerPersonal1 stop];
+    }
+    if ([playerCongratulations isPlaying]) {
+        [playerCongratulations stop];
+    }
+    if ([playerIntro isPlaying]){
+        [playerIntro stop];
+    }
+    if ([playerWellDone isPlaying]) {
+        [playerWellDone stop];
+    }
+    
+    [UIView animateWithDuration:0.1
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^(void)
+     {
+         [settingsView setHidden:FALSE];
+     }
+                     completion:^(BOOL finished)
+     {
+     }];
+    
+}
+*/
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-
+    
     // Set up event to trigger when the application becomes active again, to display the setup page.
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     
@@ -539,20 +568,525 @@ int playSetup;
                selector:@selector(backToForeground)
                    name:UIApplicationWillEnterForegroundNotification
                  object:nil];
-    
-    NSString *pathCongratulations;
-    pathCongratulations = [[NSBundle mainBundle] pathForResource:@"Congratulations" ofType:@"mp3"];
-    playerCongratulations = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:pathCongratulations] error:nil];
-    
+	
+	// Set the path up for the player that's going to play the default Well Done message
     NSString *pathWellDone;
     pathWellDone = [[NSBundle mainBundle] pathForResource:@"WellDone" ofType:@"mp3"];
     playerWellDone = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:pathWellDone] error:nil];
     
+	// Make sure that the database of sessions & games exists in the documents folder.
+	// If it doesn't, copy from the app resources into the documents folder
+	NSFileManager *fileManager = [NSFileManager defaultManager];
+	NSError *error;
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSString *documentsDirectory = [paths objectAtIndex:0];
+	
+	dbFile = [documentsDirectory stringByAppendingPathComponent:@"see.me.count.db"];
+	
+	if ([fileManager fileExistsAtPath:dbFile] == NO) {
+		NSString *resourcePath = [[NSBundle mainBundle] pathForResource:@"see.me.count" ofType:@"db"];
+		[fileManager copyItemAtPath:resourcePath toPath:dbFile error:&error];
+	}
+	
+	// Set up images
+	myDigImages = [NSMutableArray arrayWithObjects:nil count:0];
+	
+	[myDigImages addObject:[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"Dig0"] ofType:@"png"]];
+	[myDigImages addObject:[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"Dig1"] ofType:@"png"]];
+	[myDigImages addObject:[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"Dig2"] ofType:@"png"]];
+	[myDigImages addObject:[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"Dig3"] ofType:@"png"]];
+	[myDigImages addObject:[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"Dig4"] ofType:@"png"]];
+	[myDigImages addObject:[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"Dig5"] ofType:@"png"]];
+	[myDigImages addObject:[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"Dig6"] ofType:@"png"]];
+	[myDigImages addObject:[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"Dig7"] ofType:@"png"]];
+	[myDigImages addObject:[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"Dig8"] ofType:@"png"]];
+	[myDigImages addObject:[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"Dig9"] ofType:@"png"]];
+	
+	//  Set which buttons are available on the initial settings screen. The method that does this also sets
+	//  the colours of the labels for each item, to show whether they have been already been recorded or not.
     [self enableSetupButtons];
     
-    randPic=0;
     playSetup=0;
+	currGameID=0;
 }
+
+- (void) newSessID {
+	NSInteger oldSessID=0;
+	oldSessID=[self singleNumQuery:@"select max(sessID) from useEvent"];
+	currSessID=++oldSessID;
+	
+	char *insert_sql="insert into sessDetail (sessID, sessDate, sessTime) values (?,?,?)";
+
+	NSDateFormatter *DateFormatter=[[NSDateFormatter alloc] init];
+	[DateFormatter setDateFormat:@"yyyyMMdd"];
+	NSString *wDate=[DateFormatter stringFromDate:[NSDate date]];
+	[DateFormatter setDateFormat:@"hhmmss"];
+	NSString *wTime=[DateFormatter stringFromDate:[NSDate date]];
+
+	sqlite3_stmt *statement=nil;
+
+	struct sqlite3 *sqlHandle=[self openDB];
+	
+	if (sqlHandle!=NULL) {
+		if (sqlite3_prepare_v2(sqlHandle, insert_sql, -1, &statement, NULL) == SQLITE_OK) {
+			sqlite3_bind_int(statement,1,(int)currSessID);
+			sqlite3_bind_text(statement,2,[wDate UTF8String],-1,SQLITE_TRANSIENT);
+			sqlite3_bind_text(statement,3,[wTime UTF8String],-1,SQLITE_TRANSIENT);
+			sqlite3_step(statement);
+			sqlite3_finalize(statement);
+		}
+		sqlite3_close(sqlHandle);
+	}
+}
+/*
+-(NSInteger) newGameID:(NSInteger)sessID {
+	NSInteger oldSessID=[self singleNumQuery:[NSString stringWithFormat:@"select max(gameID) from useEvent where sessID=%ld",(long)sessID]];
+	
+	const char *insert_sql="insert into gameDetail (sessID,gameID,startDate,startTime) values (?,?,?,?)";
+	sqlite3_stmt *statement;
+	struct sqlite3 *sqlHandle = [self openDB];
+	
+	NSDateFormatter *DateFormatter=[[NSDateFormatter alloc] init];
+	[DateFormatter setDateFormat:@"yyyyMMdd"];
+	NSString *wDate=[DateFormatter stringFromDate:[NSDate date]];
+	[DateFormatter setDateFormat:@"hhmmss"];
+	NSString *wTime=[DateFormatter stringFromDate:[NSDate date]];
+	
+	if (sqlHandle!=NULL) {
+		if (sqlite3_prepare_v2(sqlHandle, insert_sql, -1, &statement, NULL) == SQLITE_OK) {
+			sqlite3_bind_int(statement,1,(int)currSessID);
+			sqlite3_bind_int(statement,2,(int)currGameID);
+			sqlite3_bind_text(statement,3,[wDate UTF8String],-1,SQLITE_TRANSIENT);
+			sqlite3_bind_text(statement,4,[wTime UTF8String],-1,SQLITE_TRANSIENT);
+			sqlite3_step(statement);
+			sqlite3_finalize(statement);
+		}
+		sqlite3_close(sqlHandle);
+	}
+
+	return ++oldSessID;
+}
+*/
+- (void) logNumPress:(NSInteger)numPressed {
+	NSDateFormatter *DateFormatter=[[NSDateFormatter alloc] init];
+	[DateFormatter setDateFormat:@"yyyyMMdd"];
+	NSString *wDate=[DateFormatter stringFromDate:[NSDate date]];
+	[DateFormatter setDateFormat:@"hhmmss"];
+	NSString *wTime=[DateFormatter stringFromDate:[NSDate date]];
+
+	char *insert_sql="insert into useEvent (sessID,gameID,eventDate,eventTime,numPressed,numCorrect) values (?,?,?,?,?,?)";
+	sqlite3_stmt *statement=nil;
+	
+	struct sqlite3 *sqlHandle=[self openDB];
+	
+	if (sqlHandle!=NULL) {
+		if (sqlite3_prepare_v2(sqlHandle, insert_sql, -1, &statement, NULL) == SQLITE_OK) {
+			sqlite3_bind_int(statement,1,(int)currSessID);
+			sqlite3_bind_int(statement,2,(int)currGameID);
+			sqlite3_bind_text(statement,3,[wDate UTF8String],-1,SQLITE_TRANSIENT);
+			sqlite3_bind_text(statement,4,[wTime UTF8String],-1,SQLITE_TRANSIENT);
+			sqlite3_bind_int(statement,5,(int)numPressed);
+			sqlite3_bind_int(statement,6,correctNum);
+			sqlite3_step(statement);
+			sqlite3_finalize(statement);
+		}
+		sqlite3_close(sqlHandle);
+	}
+}
+
+- (struct sqlite3 *) openDB {
+//	NSString *dbFile;
+//	dbFile=[[NSBundle mainBundle] pathForResource:@"see.me.count" ofType:@"db" ];
+	const char *dbPath=[dbFile UTF8String];
+	struct sqlite3 *sqlHandle;
+	if(!(sqlite3_open(dbPath,&sqlHandle) == SQLITE_OK))
+	{
+		NSLog(@"An error has occured.");
+		return NULL;
+	} else {
+		return sqlHandle;
+	}
+}
+
+- (int) singleNumQuery:(NSString *)sqlQuery {
+	const char *query_sql=[sqlQuery UTF8String];
+	sqlite3_stmt *statement;
+	int retValue=0;
+	struct sqlite3 *sqlHandle = [self openDB];
+
+	if (sqlHandle!=NULL) {
+		if (sqlite3_prepare_v2(sqlHandle, query_sql, -1, &statement, NULL) == SQLITE_OK) {
+			if (sqlite3_step(statement)==SQLITE_ROW) {
+				retValue=sqlite3_column_int(statement,0);
+			}
+			sqlite3_finalize(statement);
+		}
+		sqlite3_close(sqlHandle);
+		return retValue;
+	} else {
+		return -1;
+	}
+}
+
+- (int) numSessions {
+	return [self singleNumQuery:@"select count(*) from (select sessID from useEvent group by sessID)"];
+}
+
+- (int) numGames {
+	return [self singleNumQuery:@"select count(gameID) from useEvent"];
+}
+/*
+- (NSMutableArray *) sessionsByGames {
+	const char *query_sql="select eventDate, sessID, count(eventDate) from useEvent group by eventDate, sessID";
+	sqlite3_stmt *statement;
+	struct sqlite3 *sqlHandle = [self openDB];
+	
+	NSMutableArray *retDataX = [NSMutableArray arrayWithObjects:nil count:0];
+	NSMutableArray *retDataY = [NSMutableArray arrayWithObjects:nil count:0];
+	
+	if (sqlHandle!=NULL) {
+		if (sqlite3_prepare_v2(sqlHandle, query_sql, -1, &statement, NULL) == SQLITE_OK) {
+				while  (sqlite3_step(statement)==SQLITE_ROW) {
+					NSString *dateValue = [NSString stringWithFormat:@"%s",sqlite3_column_text(statement,0)];
+					NSString *monthNo = [dateValue substringWithRange:NSMakeRange(4, 2)];
+					NSString *dayNo = [dateValue substringWithRange:NSMakeRange(6, 2)];
+					NSString *axisYvalue;
+					switch ([monthNo intValue]) {
+						case 1:
+							axisYvalue=[NSString stringWithFormat:@"%@-Jan / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
+							break;
+						case 2:
+							axisYvalue=[NSString stringWithFormat:@"%@-Feb / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
+							break;
+						case 3:
+							axisYvalue=[NSString stringWithFormat:@"%@-Mar / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
+							break;
+						case 4:
+							axisYvalue=[NSString stringWithFormat:@"%@-Apr / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
+							break;
+						case 5:
+							axisYvalue=[NSString stringWithFormat:@"%@-May / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
+							break;
+						case 6:
+							axisYvalue=[NSString stringWithFormat:@"%@-Jun / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
+							break;
+						case 7:
+							axisYvalue=[NSString stringWithFormat:@"%@-Jul / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
+							break;
+						case 8:
+							axisYvalue=[NSString stringWithFormat:@"%@-Aug / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
+							break;
+						case 9:
+							axisYvalue=[NSString stringWithFormat:@"%@-Sep / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
+							break;
+						case 10:
+							axisYvalue=[NSString stringWithFormat:@"%@-Oct / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
+							break;
+						case 11:
+							axisYvalue=[NSString stringWithFormat:@"%@-Nov / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
+							break;
+						case 12:
+							axisYvalue=[NSString stringWithFormat:@"%@-Dec / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
+							break;
+						default:
+							NSLog(@"What month? %d", [monthNo intValue]);
+					}
+					[retDataX addObject:axisYvalue];
+					[retDataY addObject:[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,2)]];
+				}
+		}
+		sqlite3_finalize(statement);
+		sqlite3_close(sqlHandle);
+	}
+	
+	NSMutableArray *retData = [NSMutableArray arrayWithObjects:nil count:0];
+	[retData addObject:retDataX];
+	[retData addObject:retDataY];
+	
+	return retData;
+}
+*/
+
+- (NSMutableArray *) gamesInSession:(NSInteger)daysToDisplay offsetDay:(NSInteger)offsetDay {
+	NSMutableArray *retDataX = [NSMutableArray arrayWithObjects:nil count:0];
+	NSMutableArray *retDataY1 = [NSMutableArray arrayWithObjects:nil count:0];
+	NSMutableArray *retDataY2 = [NSMutableArray arrayWithObjects:nil count:0];
+
+	const char *query_sql="select sd.sessDate, (select count(*) from useevent ue where ue.eventDate = sd.sessDate and numPressed!=numCorrect), (select count(*) from useevent ue where ue.eventDate = sd.sessDate and numPressed=numCorrect)  from sessdetail sd group by sessdate";
+	sqlite3_stmt *statement;
+	struct sqlite3 *sqlHandle = [self openDB];
+	
+	if (sqlHandle!=NULL) {
+		if (sqlite3_prepare_v2(sqlHandle, query_sql, -1, &statement, NULL) == SQLITE_OK) {
+			while  (sqlite3_step(statement)==SQLITE_ROW) {
+				NSString *dateValue = [NSString stringWithFormat:@"%s",sqlite3_column_text(statement,0)];
+				NSString *monthNo = [dateValue substringWithRange:NSMakeRange(4, 2)];
+				NSString *dayNo = [dateValue substringWithRange:NSMakeRange(6, 2)];
+				NSString *axisYvalue;
+				switch ([monthNo intValue]) {
+					case 1:
+						axisYvalue=[NSString stringWithFormat:@"%@-Jan",dayNo];
+						break;
+					case 2:
+						axisYvalue=[NSString stringWithFormat:@"%@-Feb",dayNo];
+						break;
+					case 3:
+						axisYvalue=[NSString stringWithFormat:@"%@-Mar",dayNo];
+						break;
+					case 4:
+						axisYvalue=[NSString stringWithFormat:@"%@-Apr",dayNo];
+						break;
+					case 5:
+						axisYvalue=[NSString stringWithFormat:@"%@-May",dayNo];
+						break;
+					case 6:
+						axisYvalue=[NSString stringWithFormat:@"%@-Jun",dayNo];
+						break;
+					case 7:
+						axisYvalue=[NSString stringWithFormat:@"%@-Jul",dayNo];
+						break;
+					case 8:
+						axisYvalue=[NSString stringWithFormat:@"%@-Aug",dayNo];
+						break;
+					case 9:
+						axisYvalue=[NSString stringWithFormat:@"%@-Sep",dayNo];
+						break;
+					case 10:
+						axisYvalue=[NSString stringWithFormat:@"%@-Oct",dayNo];
+						break;
+					case 11:
+						axisYvalue=[NSString stringWithFormat:@"%@-Nov",dayNo];
+						break;
+					case 12:
+						axisYvalue=[NSString stringWithFormat:@"%@-Dec",dayNo];
+						break;
+					default:
+						NSLog(@"What month? %d", [monthNo intValue]);
+				}
+				[retDataX addObject:axisYvalue];
+				[retDataY1 addObject:[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
+				[retDataY2 addObject:[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,2)]];
+			}
+		}
+		sqlite3_finalize(statement);
+		sqlite3_close(sqlHandle);
+	}
+		
+	NSMutableArray *retData = [NSMutableArray arrayWithObjects:nil count:0];
+	[retData addObject:retDataX];
+	[retData addObject:retDataY1];
+	[retData addObject:retDataY2];
+
+//	if (daysToDisplay < [retDataX count]) {
+//		retData=[self trimDataByDays:retData numItems:daysToDisplay offsetItem:offsetDay];
+//	}
+	
+	return retData;
+}
+
+- (NSMutableArray *) trimDataByDays:(NSMutableArray *)theData numItems:(NSInteger)numItems offsetItem:(NSInteger)offsetItem {
+	NSMutableArray *retData = [NSMutableArray arrayWithObjects:nil count:0];
+	NSMutableArray *retRange1 = [NSMutableArray arrayWithObjects:nil count:0];
+	NSMutableArray *retRange2 = [NSMutableArray arrayWithObjects:nil count:0];
+	NSMutableArray *retRange3 = [NSMutableArray arrayWithObjects:nil count:0];
+	NSMutableArray *inputRange1 = [theData objectAtIndex:0];
+	NSMutableArray *inputRange2 = [theData objectAtIndex:1];
+	NSMutableArray *inputRange3 = [theData objectAtIndex:2];
+	
+	NSInteger startIdx = [inputRange1 count] - numItems - offsetItem;
+	if (startIdx<0) {
+		startIdx=0;
+	}
+	
+	for (int newIdx=0;newIdx<numItems;newIdx++) {
+		[retRange1 addObject:[inputRange1 objectAtIndex:(startIdx + newIdx)]];
+		[retRange2 addObject:[inputRange2 objectAtIndex:(startIdx + newIdx)]];
+		[retRange3 addObject:[inputRange3 objectAtIndex:(startIdx + newIdx)]];
+	}
+
+	[retData addObject:retRange1];
+	[retData addObject:retRange2];
+	[retData addObject:retRange3];
+	
+	return retData;
+}
+
+- (double) avgGoesToGetRight {
+	int totalNumRight = [self singleNumQuery:@"select count(*) from useEvent where numPressed=numCorrect"];
+	int totalNum = [self singleNumQuery:@"select count(sessID) from useEvent"];
+		
+	return totalNum / totalNumRight;
+}
+
+- (IBAction)showInfo:(id)sender {
+	[infoView setHidden:NO];
+	
+	[self updateSessions];
+	[self updateGames];
+	[self showSessionsByGames];
+	[self showGamesInSession];
+}
+
+- (IBAction)closeInfo:(id)sender {
+	[infoView setHidden:YES];
+}
+
+- (void) updateSessions {
+	digitalDisplay *myDig1 __attribute__((unused)) = [[digitalDisplay alloc] initWithFrame:CGRectMake(112, 20, 90, 112) containingView:infoView digitImages:myDigImages numberValue:[self numSessions] label:@"Number of times played"];
+}
+
+- (void) updateGames {
+	digitalDisplay *myDig1 __attribute__((unused)) = [[digitalDisplay alloc] initWithFrame:CGRectMake(254, 20, 90, 112) containingView:infoView digitImages:myDigImages numberValue:[self numGames] label:@"Number of games played"];
+
+}
+
+- (void) writeHeading:(NSString *)text rect:(CGRect)rect containerView:(UIView *)containerView colour:(UIColor*)colour {
+	UILabel *textLabel;
+	
+	textLabel = [[UILabel alloc] initWithFrame:rect];
+	[textLabel setText:text];
+	textLabel.textColor=colour;
+	textLabel.font=[UIFont fontWithName:@"ArialMT" size:24];
+	[containerView addSubview:textLabel];
+	[containerView bringSubviewToFront:textLabel];
+
+}
+
+- (NSMutableArray *) updateNumberCounts {
+	NSMutableArray *returnSet = [NSMutableArray arrayWithObjects:nil count:0];
+    NSMutableArray *setNumbs = [NSMutableArray arrayWithObjects:nil count:0];
+	NSMutableArray *setRight = [NSMutableArray arrayWithObjects:nil count:0];
+	NSMutableArray *setWrong = [NSMutableArray arrayWithObjects:nil count:0];
+	
+	for (int dIdx=0;dIdx<9;dIdx++) {
+		[setNumbs addObject:[NSString stringWithFormat:@"%d",dIdx+1]];
+		
+		[setWrong addObject:[NSString stringWithFormat:@"%d",[self singleNumQuery:[NSString stringWithFormat:@"select count(*) from useevent where numcorrect=%d and numpressed!=%d",dIdx+1,dIdx+1]]]];
+
+		[setRight addObject:[NSString stringWithFormat:@"%d",[self singleNumQuery:[NSString stringWithFormat:@"select count(*) from useevent where numcorrect=%d and numpressed=%d",dIdx+1,dIdx+1]]]] ;
+
+	}
+
+	[returnSet addObject:setNumbs];
+	[returnSet addObject:setWrong];
+	[returnSet addObject:setRight];
+	return returnSet;
+}
+
+- (void) showSessionsByGames {
+	NSMutableArray *localGameDat;
+	
+	localGameDat=[self updateNumberCounts];
+	
+	ChartView *myChart;
+	
+	myChart	=[[ChartView alloc] initWithFrame:CGRectMake(12, 220, 1000, 240) containingView:infoView rangeX:localGameDat[0] rangeY1:localGameDat[1] rangeY2:localGameDat[2] chartLabel:@""];
+
+
+	[self writeHeading:@"How many times was each number got or not?" rect:CGRectMake(12, 180, 600, 30) containerView:infoView colour:[UIColor whiteColor]];
+}
+
+- (void) showGamesInSession {
+	sessGameDat = [self gamesInSession:7 offsetDay:0];
+
+	[self writeHeading:@"Numbers Right and Wrong by Date" rect:CGRectMake(12, 472, 600, 30) containerView:infoView colour:[UIColor whiteColor]];
+	
+	goLeft=[[UIButton alloc] initWithFrame:CGRectMake(10, 617, 30, 30)];
+	[goLeft setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"arrowLeft" ofType:@"png"]] forState:UIControlStateNormal];
+	[goLeft addTarget:self action:@selector(leftButtonPress) forControlEvents:UIControlEventTouchUpInside];
+	[infoView addSubview:goLeft];
+	[infoView bringSubviewToFront:goLeft];
+	if ([sessGameDat[0]count] > 7) {
+		goLeft.hidden=NO;
+	} else {
+		goLeft.hidden=YES;
+	}
+
+	goRight=[[UIButton alloc] initWithFrame:CGRectMake(984, 617, 30, 30)];
+	[goRight setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"arrowRight" ofType:@"png"]] forState:UIControlStateNormal];
+	[goRight addTarget:self action:@selector(rightButtonPress) forControlEvents:UIControlEventTouchUpInside];
+	[infoView addSubview:goRight];
+	[infoView bringSubviewToFront:goRight];
+	goRight.hidden=YES;
+
+	ChartView *myChart;
+	
+	NSMutableArray *restrictedData;
+	if ([[sessGameDat objectAtIndex:0] count] > 7) {
+		restrictedData=[self trimDataByDays:sessGameDat numItems:7 offsetItem:0];
+	} else {
+		restrictedData=sessGameDat;
+	}
+	
+	myChart	=[[ChartView alloc] initWithFrame:CGRectMake(50, 512, 924, 240) containingView:infoView rangeX:restrictedData[0] rangeY1:restrictedData[1] rangeY2:restrictedData[2] chartLabel:@""];
+	
+	viewGameOffset=0;
+	viewGameCount=[sessGameDat[0] count];
+	viewGameMaxY = myChart.maximumY;
+	NSLog(@"Max Y: %ld",(long)viewGameMaxY);
+}
+
+- (NSInteger) theMaxY {
+	NSInteger myMax=0;
+	NSMutableArray *range1;
+    NSMutableArray *range2;
+	
+	range1=[sessGameDat objectAtIndex:1];
+	range2=[sessGameDat objectAtIndex:2];
+	
+	for (int dIdx=0; dIdx<[[sessGameDat objectAtIndex:0] count]; dIdx++) {
+		if ([[range1 objectAtIndex:dIdx] integerValue] + [[range2 objectAtIndex:dIdx] integerValue] > myMax) {
+			myMax=[[range1 objectAtIndex:dIdx] integerValue] + [[range2 objectAtIndex:dIdx] integerValue];
+		}
+	}
+	
+	return myMax;
+}
+
+- (void) leftButtonPress {
+	viewGameOffset++;
+	
+	if (viewGameOffset + 7 >= viewGameCount) {
+		goLeft.hidden=YES;
+	}
+	
+	goRight.hidden=NO;
+	
+	ChartView *myChart;
+	
+	NSMutableArray *restrictedData;
+	if ([[sessGameDat objectAtIndex:0] count]> 7) {
+		restrictedData=[self trimDataByDays:sessGameDat numItems:7 offsetItem:viewGameOffset];
+	} else {
+		restrictedData=sessGameDat;
+	}
+	
+	myChart	=[[ChartView alloc] initWithFrame:CGRectMake(50, 512, 924, 240) containingView:infoView rangeX:restrictedData[0] rangeY1:restrictedData[1] rangeY2:restrictedData[2] yOveride:[self theMaxY] chartLabel:@""];
+
+}
+
+- (void) rightButtonPress {
+	viewGameOffset--;
+	
+	if (viewGameOffset<=0) {
+		viewGameOffset=0;
+		goRight.hidden=YES;
+	}
+	
+	goLeft.hidden=NO;
+
+	ChartView *myChart;
+	
+	NSMutableArray *restrictedData;
+	if ([[sessGameDat objectAtIndex:0] count] > 7) {
+		restrictedData=[self trimDataByDays:sessGameDat numItems:7 offsetItem:viewGameOffset];
+	} else {
+		restrictedData=sessGameDat;
+	}
+	
+	myChart	=[[ChartView alloc] initWithFrame:CGRectMake(50, 512, 924, 240) containingView:infoView rangeX:restrictedData[0] rangeY1:restrictedData[1] rangeY2:restrictedData[2] yOveride:[self theMaxY] chartLabel:@""];
+}
+
 
 - (void) backToForeground
 {
@@ -568,6 +1102,7 @@ int playSetup;
     [number8 setAlpha:0.0f];
     [number9 setAlpha:0.0f];
     [settingsView setHidden:FALSE];
+	[infoView setHidden:YES];
 }
 
 - (void)didReceiveMemoryWarning
@@ -577,54 +1112,63 @@ int playSetup;
 }
 
 - (IBAction)number1:(id)sender {
+	[self logNumPress:1];
     if (correctNum==1) {
         [self mySuccess];
     }
 }
 
 - (IBAction)number2:(id)sender {
+	[self logNumPress:2];
     if (correctNum==2) {
         [self mySuccess];
     }
 }
 
 - (IBAction)number3:(id)sender {
+	[self logNumPress:3];
     if (correctNum==3) {
         [self mySuccess];
     }
 }
 
 - (IBAction)number4:(id)sender {
+	[self logNumPress:4];
     if (correctNum==4) {
         [self mySuccess];
     }
 }
 
 - (IBAction)number5:(id)sender {
+	[self logNumPress:5];
     if (correctNum==5) {
         [self mySuccess];
     }
 }
 
 - (IBAction)number6:(id)sender {
+	[self logNumPress:6];
     if (correctNum==6) {
         [self mySuccess];
     }
 }
 
 - (IBAction)number7:(id)sender {
+	[self logNumPress:7];
     if (correctNum==7) {
         [self mySuccess];
     }
 }
 
 - (IBAction)number8:(id)sender {
+	[self logNumPress:8];
     if (correctNum==8) {
         [self mySuccess];
     }
 }
 
 - (IBAction)number9:(id)sender {
+	[self logNumPress:9];
     if (correctNum==9) {
         [self mySuccess];
     }
@@ -632,6 +1176,7 @@ int playSetup;
 
 - (IBAction)goButton:(id)sender {
     [settingsView setHidden:TRUE];
+	[self newSessID];
     [self myInit];
 }
 
@@ -941,7 +1486,7 @@ int playSetup;
      {
          [recordProgress setFrame:CGRectMake(0, 0, 386, 36)];
      }];
-
+    
     // Start recording
     [recorder1 recordForDuration:4];
 }
@@ -1007,7 +1552,7 @@ int playSetup;
     NSURL *temporaryRecFile;
     //Load recording path from preferences
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-
+    
     NSString *personalNumKey;
     switch (recordNum) {
         case 1:
@@ -1104,7 +1649,7 @@ int playSetup;
                          completion:^(BOOL finished)
          {
          }];
-
+        
     } else if (playSetup) {
         playSetup=0;
         [self enableSetupButtons];
@@ -1128,7 +1673,7 @@ int playSetup;
             case 1:
             {
                 currentTune=2;
-
+                
                 int countPersonal = 0;
                 int itemsPersonal[5];
                 NSURL *temporaryRecFile1, *temporaryRecFile2, *temporaryRecFile3, *temporaryRecFile4, *temporaryRecFile;
@@ -1184,8 +1729,11 @@ int playSetup;
             case 2:
             {
                 currentTune=3;
-                [playerCongratulations play];
-                [self myAnimationThree];
+/*
+ [playerCongratulations play];
+ */
+				[self playSuccessTune];
+				[self myAnimationThree];
             }
                 break;
             case 3:
@@ -1371,7 +1919,7 @@ int playSetup;
             recordProgress=wd4Progress;
             break;
     }
-
+    
     [recordLabel setBackgroundColor:[UIColor clearColor]];
     [UIView animateWithDuration:4
                           delay:0
@@ -1666,4 +2214,42 @@ int playSetup;
     }
 }
 
+- (void) playSuccessTune {
+	// Set the path up for the players that are  going to play the congratulations tunes
+    NSString *pathSuccess;
+	
+	int randTune;
+	randTune=rand() % 5 + 1;
+	switch (randTune) {
+		case 1:
+			pathSuccess = [[NSBundle mainBundle] pathForResource:@"success01" ofType:@"mp3"];
+			playerSuccess = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:pathSuccess] error:nil];
+
+			break;
+		case 2:
+			pathSuccess = [[NSBundle mainBundle] pathForResource:@"success02" ofType:@"mp3"];
+			playerSuccess = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:pathSuccess] error:nil];
+
+			break;
+		case 3:
+			pathSuccess = [[NSBundle mainBundle] pathForResource:@"success03" ofType:@"mp3"];
+			playerSuccess = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:pathSuccess] error:nil];
+
+			break;
+		case 4:
+			pathSuccess = [[NSBundle mainBundle] pathForResource:@"success04" ofType:@"mp3"];
+			playerSuccess = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:pathSuccess] error:nil];
+			
+			break;
+		case 5:
+			pathSuccess = [[NSBundle mainBundle] pathForResource:@"success05" ofType:@"mp3"];
+			playerSuccess = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:pathSuccess] error:nil];
+			
+			break;
+		default:
+			NSLog(@"Unknown success tune chosen: %d",randTune);
+	}
+	[playerSuccess setDelegate:self];
+	[playerSuccess play];
+}
 @end

@@ -8,9 +8,27 @@
 
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
+#import <sqlite3.h>
+#import "digitalDisplay.h"
+#import "ChartView.h"
 
 @interface ViewController : UIViewController
-           <AVAudioRecorderDelegate, AVAudioPlayerDelegate>
+							<AVAudioRecorderDelegate, AVAudioPlayerDelegate>
+{
+	int correctNum;
+	int currentTune;
+	int playIntro;
+	int playSetup;
+	int viewGameOffset;
+	NSInteger viewGameCount;
+	NSInteger viewGameMaxY;
+	NSMutableArray *sessGameDat;
+	UIButton *goLeft, *goRight;
+	NSInteger currSessID;
+	NSInteger currGameID;
+	NSString *dbFile;
+	NSMutableArray *myDigImages;
+};
 
 - (IBAction)number1:(id)sender;
 - (IBAction)number2:(id)sender;
@@ -179,8 +197,15 @@
 @property (weak, nonatomic) IBOutlet UIView *wd4Progress;
 @property (weak, nonatomic) IBOutlet UITextView *wd4Message;
 
+- (IBAction)showInfo:(id)sender;
+@property (weak, nonatomic) IBOutlet UIView *infoView;
+
+@property (weak, nonatomic) IBOutlet UIView *infoViewSess;
+@property (weak, nonatomic) IBOutlet UIView *infoViewGame;
+@property (weak, nonatomic) IBOutlet UIView *infoViewSessByGames;
+@property (weak, nonatomic) IBOutlet UIView *infoViewRightWrong;
 
 
-
+- (IBAction)closeInfo:(id)sender;
 
 @end
