@@ -11,14 +11,14 @@
 #import <sqlite3.h>
 #import "digitalDisplay.h"
 #import "ChartView.h"
+#import "playGame.h"
+#import "setupGame.h"
 
 @interface ViewController : UIViewController
 							<AVAudioRecorderDelegate, AVAudioPlayerDelegate>
 {
-	int correctNum;
+//	int correctNum;
 	int currentTune;
-	int playIntro;
-	int playSetup;
 	int viewGameOffset;
 	NSInteger viewGameCount;
 	NSInteger viewGameMaxY;
@@ -28,35 +28,26 @@
 	NSInteger currGameID;
 	NSString *dbFile;
 	NSMutableArray *myDigImages;
+	
+	AVAudioRecorder *recorder1;
+    AVAudioPlayer *playerPersonal1;
+	AVAudioPlayer *playerSuccess;
+    AVAudioPlayer *playerIntro;
+    AVAudioPlayer *playerWellDone;
 };
 
-- (IBAction)number1:(id)sender;
-- (IBAction)number2:(id)sender;
-- (IBAction)number3:(id)sender;
-- (IBAction)number4:(id)sender;
-- (IBAction)number5:(id)sender;
-- (IBAction)number6:(id)sender;
-- (IBAction)number7:(id)sender;
-- (IBAction)number8:(id)sender;
-- (IBAction)number9:(id)sender;
-@property (weak, nonatomic) IBOutlet UIButton *number1;
-@property (weak, nonatomic) IBOutlet UIButton *number2;
-@property (weak, nonatomic) IBOutlet UIButton *number3;
-@property (weak, nonatomic) IBOutlet UIButton *number4;
-@property (weak, nonatomic) IBOutlet UIButton *number5;
-@property (weak, nonatomic) IBOutlet UIButton *number6;
-@property (weak, nonatomic) IBOutlet UIButton *number7;
-@property (weak, nonatomic) IBOutlet UIButton *number8;
-@property (weak, nonatomic) IBOutlet UIButton *number9;
-@property (weak, nonatomic) IBOutlet UIImageView *picture1;
-@property (weak, nonatomic) IBOutlet UIImageView *picture2;
-@property (weak, nonatomic) IBOutlet UIImageView *picture3;
-@property (weak, nonatomic) IBOutlet UIImageView *picture4;
-@property (weak, nonatomic) IBOutlet UIImageView *picture5;
-@property (weak, nonatomic) IBOutlet UIImageView *picture6;
-@property (weak, nonatomic) IBOutlet UIImageView *picture7;
-@property (weak, nonatomic) IBOutlet UIImageView *picture8;
-@property (weak, nonatomic) IBOutlet UIImageView *picture9;
+@property AVAudioPlayer *playerPersonal1;
+@property AVAudioPlayer *playerSuccess;
+@property AVAudioPlayer *playerIntro;
+@property AVAudioPlayer *playerWellDone;
+@property int playIntro;
+@property NSInteger currGameID;
+@property int currentTune;
+@property ViewController *pGame;
+
+- (void) newGame;
+- (void) logNumPress:(NSInteger)numPressed correctNum:(NSInteger)correctNum;
+
 @property (weak, nonatomic) IBOutlet UIView *settingsView;
 
 - (IBAction)buttonRecord1:(id)sender;
@@ -199,12 +190,6 @@
 
 - (IBAction)showInfo:(id)sender;
 @property (weak, nonatomic) IBOutlet UIView *infoView;
-
-@property (weak, nonatomic) IBOutlet UIView *infoViewSess;
-@property (weak, nonatomic) IBOutlet UIView *infoViewGame;
-@property (weak, nonatomic) IBOutlet UIView *infoViewSessByGames;
-@property (weak, nonatomic) IBOutlet UIView *infoViewRightWrong;
-
 
 - (IBAction)closeInfo:(id)sender;
 

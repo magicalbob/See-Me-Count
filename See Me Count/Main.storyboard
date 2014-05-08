@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="BYZ-38-t0r">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -12,132 +12,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="IwN-8K-cOj">
-                                <rect key="frame" x="453" y="312" width="144" height="144"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="nXg-tm-OZO">
-                                <rect key="frame" x="248" y="312" width="144" height="144"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="dUW-ZB-fqr">
-                                <rect key="frame" x="656" y="312" width="144" height="144"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="vaT-tE-pFX">
-                                <rect key="frame" x="248" y="151" width="144" height="144"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="hgO-zd-eq5">
-                                <rect key="frame" x="656" y="476" width="144" height="144"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="SpD-ir-pB7">
-                                <rect key="frame" x="656" y="151" width="144" height="144"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="Vey-nB-uOK">
-                                <rect key="frame" x="248" y="476" width="144" height="144"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="0U9-uw-eut">
-                                <rect key="frame" x="453" y="476" width="144" height="144"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="tQy-OF-ZLp">
-                                <rect key="frame" x="453" y="151" width="144" height="144"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                            <button opaque="NO" alpha="0.0" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="b7e-sc-yKh">
-                                <rect key="frame" x="465" y="1" width="100" height="100"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="No1.png">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="number1:" destination="BYZ-38-t0r" eventType="touchDown" id="KXK-iw-U0z"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" alpha="0.0" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="U2h-iH-NYP">
-                                <rect key="frame" x="710" y="51" width="100" height="100"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="No2.png">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="number2:" destination="BYZ-38-t0r" eventType="touchDown" id="tId-1H-fFY"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" alpha="0.0" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="JWl-fe-W3H">
-                                <rect key="frame" x="923" y="262" width="100" height="100"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="No3.png">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="number3:" destination="BYZ-38-t0r" eventType="touchDown" id="Hn2-KA-2YX"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" alpha="0.0" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="yC4-Ng-LeL">
-                                <rect key="frame" x="838" y="545" width="100" height="100"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="No4.png">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="number4:" destination="BYZ-38-t0r" eventType="touchDown" id="m4f-rM-Ys3"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" alpha="0.0" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="kcT-dc-RzE">
-                                <rect key="frame" x="587" y="667" width="100" height="100"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="No5.png">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="number5:" destination="BYZ-38-t0r" eventType="touchDown" id="gAH-U6-XXt"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" alpha="0.0" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="snu-r2-HFR">
-                                <rect key="frame" x="342" y="667" width="100" height="100"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="No6.png">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="number6:" destination="BYZ-38-t0r" eventType="touchDown" id="bZ8-E9-naI"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" alpha="0.0" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="Hsx-r5-QOx">
-                                <rect key="frame" x="89" y="545" width="100" height="100"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="No7.png">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="number7:" destination="BYZ-38-t0r" eventType="touchDown" id="9Ps-M7-RcN"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" alpha="0.0" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="iE8-AP-be6">
-                                <rect key="frame" x="4" y="262" width="100" height="100"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="No8.png">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="number8:" destination="BYZ-38-t0r" eventType="touchDown" id="YBv-gW-1J1"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" alpha="0.0" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="GhB-k7-mSG">
-                                <rect key="frame" x="218" y="51" width="100" height="100"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="No9.png">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="number9:" destination="BYZ-38-t0r" eventType="touchDown" id="imb-hn-Zve"/>
-                                </connections>
-                            </button>
                             <view contentMode="scaleToFill" id="cOk-P7-qgK">
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1028,6 +902,7 @@
                         <outlet property="buttonPlay7" destination="cyX-v9-tYG" id="1Wg-XR-RF5"/>
                         <outlet property="buttonPlay8" destination="L9S-g3-MYB" id="oVE-JE-wwQ"/>
                         <outlet property="buttonPlay9" destination="qlb-xx-ybt" id="Wva-cl-tFa"/>
+                        <outlet property="buttonRecord1" destination="BPr-YI-zJI" id="LOp-e6-UEx"/>
                         <outlet property="buttonRecord2" destination="4B1-aC-3BB" id="fQi-1q-lWp"/>
                         <outlet property="buttonRecord3" destination="W27-1Q-Cfd" id="U0l-Dw-YiH"/>
                         <outlet property="buttonRecord4" destination="Z4B-9l-FA8" id="smb-b6-HoQ"/>
@@ -1042,24 +917,6 @@
                         <outlet property="deleteWD4" destination="TUV-Hm-fPl" id="O7Z-3N-J1S"/>
                         <outlet property="goButton" destination="mIK-0C-DY6" id="NYp-f8-vJB"/>
                         <outlet property="infoView" destination="ipc-ab-2bc" id="k24-sb-yY6"/>
-                        <outlet property="number1" destination="b7e-sc-yKh" id="BDO-oL-UMm"/>
-                        <outlet property="number2" destination="U2h-iH-NYP" id="ffk-8o-vGP"/>
-                        <outlet property="number3" destination="JWl-fe-W3H" id="cRU-uV-7lq"/>
-                        <outlet property="number4" destination="yC4-Ng-LeL" id="49o-Hp-KHi"/>
-                        <outlet property="number5" destination="kcT-dc-RzE" id="GAq-m6-hk5"/>
-                        <outlet property="number6" destination="snu-r2-HFR" id="yYL-cc-UzC"/>
-                        <outlet property="number7" destination="Hsx-r5-QOx" id="bYL-FG-TBr"/>
-                        <outlet property="number8" destination="iE8-AP-be6" id="Gnb-NO-TZa"/>
-                        <outlet property="number9" destination="GhB-k7-mSG" id="r9e-Se-dgH"/>
-                        <outlet property="picture1" destination="IwN-8K-cOj" id="DWo-bO-hz9"/>
-                        <outlet property="picture2" destination="nXg-tm-OZO" id="wQk-LM-7mV"/>
-                        <outlet property="picture3" destination="dUW-ZB-fqr" id="6j4-CP-Y6S"/>
-                        <outlet property="picture4" destination="vaT-tE-pFX" id="CDp-hv-v52"/>
-                        <outlet property="picture5" destination="hgO-zd-eq5" id="Fuj-kR-chc"/>
-                        <outlet property="picture6" destination="SpD-ir-pB7" id="wB2-f9-G52"/>
-                        <outlet property="picture7" destination="Vey-nB-uOK" id="l96-zg-fPr"/>
-                        <outlet property="picture8" destination="0U9-uw-eut" id="OJf-ZE-YB0"/>
-                        <outlet property="picture9" destination="tQy-OF-ZLp" id="Bgm-BN-Gpa"/>
                         <outlet property="playWD1" destination="2Hu-Zb-dz1" id="lB4-RI-gyW"/>
                         <outlet property="playWD2" destination="r9U-es-0XK" id="2Ec-Cv-mjs"/>
                         <outlet property="playWD3" destination="cuu-xf-1nI" id="zD2-Gt-2vZ"/>
@@ -1115,15 +972,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="No1.png" width="600" height="600"/>
-        <image name="No2.png" width="600" height="600"/>
-        <image name="No3.png" width="600" height="600"/>
-        <image name="No4.png" width="600" height="600"/>
-        <image name="No5.png" width="600" height="600"/>
-        <image name="No6.png" width="600" height="600"/>
-        <image name="No7.png" width="600" height="600"/>
-        <image name="No8.png" width="600" height="600"/>
-        <image name="No9.png" width="600" height="600"/>
         <image name="close.png" width="256" height="256"/>
         <image name="go.png" width="75" height="75"/>
         <image name="info.png" width="256" height="256"/>

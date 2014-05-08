@@ -9,36 +9,19 @@
 #import "ViewController.h"
 
 @interface ViewController () {
-    AVAudioRecorder *recorder1;
-    AVAudioPlayer *playerPersonal1;
-	AVAudioPlayer *playerSuccess;
-    AVAudioPlayer *playerIntro;
-    AVAudioPlayer *playerWellDone;
+
 }
 
 @end
 
 @implementation ViewController
 
-@synthesize number1;
-@synthesize number2;
-@synthesize number3;
-@synthesize number4;
-@synthesize number5;
-@synthesize number6;
-@synthesize number7;
-@synthesize number8;
-@synthesize number9;
-
-@synthesize picture1;
-@synthesize picture2;
-@synthesize picture3;
-@synthesize picture4;
-@synthesize picture5;
-@synthesize picture6;
-@synthesize picture7;
-@synthesize picture8;
-@synthesize picture9;
+@synthesize playerIntro;
+@synthesize currGameID;
+@synthesize playerSuccess;
+@synthesize playerPersonal1;
+@synthesize playerWellDone;
+@synthesize currentTune;
 
 @synthesize settingsView;
 @synthesize buttonRecord1;
@@ -129,433 +112,6 @@
 
 @synthesize infoView;
 
-@synthesize infoViewSess;
-@synthesize infoViewGame;
-@synthesize infoViewSessByGames;
-@synthesize infoViewRightWrong;
-
-- (void) myInit {
-    
-    char randPicNameC[8];
-    NSString *cPath;
-    int lastPic;
-    
-    /* Randomise the timer, and select which of the buttons will have the correct picture */
-    srand((unsigned int)time(NULL));
-    
-    
-    
-    lastPic=correctNum;
-    do {
-        correctNum=rand() % 9 + 1;
-    } while (correctNum==lastPic);
-    
-    sprintf(randPicNameC,"Pic%01d",correctNum);
-    NSString *randPicName = [NSString stringWithUTF8String:randPicNameC];
-    
-    cPath = [[NSBundle mainBundle] pathForResource:randPicName ofType:@"jpg"];
-    
-    picture1.image = [UIImage imageWithContentsOfFile:cPath];
-    picture1.hidden=false;
-    
-    if (correctNum>1) {
-        picture2.image = [UIImage imageWithContentsOfFile:cPath];
-        picture2.hidden=false;
-    } else {
-        picture2.hidden=true;
-    }
-    
-    if (correctNum>2) {
-        picture3.image = [UIImage imageWithContentsOfFile:cPath];
-        picture3.hidden=false;
-    } else {
-        picture3.hidden=true;
-    }
-    
-    if (correctNum>3) {
-        picture4.image = [UIImage imageWithContentsOfFile:cPath];
-        picture4.hidden=false;
-    } else {
-        picture4.hidden=true;
-    }
-    
-    if (correctNum>4) {
-        picture5.image = [UIImage imageWithContentsOfFile:cPath];
-        picture5.hidden=false;
-    } else {
-        picture5.hidden=true;
-    }
-    
-    if (correctNum>5) {
-        picture6.image = [UIImage imageWithContentsOfFile:cPath];
-        picture6.hidden=false;
-    } else {
-        picture6.hidden=true;
-    }
-    
-    if (correctNum>6) {
-        picture7.image = [UIImage imageWithContentsOfFile:cPath];
-        picture7.hidden=false;
-    } else {
-        picture7.hidden=true;
-    }
-    
-    if (correctNum>7) {
-        picture8.image = [UIImage imageWithContentsOfFile:cPath];
-        picture8.hidden=false;
-    } else {
-        picture8.hidden=true;
-    }
-    
-    if (correctNum>8) {
-        picture9.image = [UIImage imageWithContentsOfFile:cPath];
-        picture9.hidden=false;
-    } else {
-        picture9.hidden=true;
-    }
-    
-    [number1 setEnabled:NO];
-    [number2 setEnabled:NO];
-    [number3 setEnabled:NO];
-    [number4 setEnabled:NO];
-    [number5 setEnabled:NO];
-    [number6 setEnabled:NO];
-    [number7 setEnabled:NO];
-    [number8 setEnabled:NO];
-    [number9 setEnabled:NO];
-    
-    NSString *pathIntro;
-    //Load recording path from preferences
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    NSString *personalNumKey;
-    
-    switch (correctNum) {
-        case 1:
-            personalNumKey=@"personalNumber11";
-            break;
-        case 2:
-            personalNumKey=@"personalNumber22";
-            break;
-        case 3:
-            personalNumKey=@"personalNumber33";
-            break;
-        case 4:
-            personalNumKey=@"personalNumber44";
-            break;
-        case 5:
-            personalNumKey=@"personalNumber55";
-            break;
-        case 6:
-            personalNumKey=@"personalNumber66";
-            break;
-        case 7:
-            personalNumKey=@"personalNumber77";
-            break;
-        case 8:
-            personalNumKey=@"personalNumber88";
-            break;
-        case 9:
-            personalNumKey=@"personalNumber99";
-            break;
-    }
-    
-    if ([prefs URLForKey:personalNumKey]!=NULL) {
-        [self buttonPlayN:correctNum isPlaySetup:0];
-    } else {
-        char randIntroNameC[10];
-        
-        sprintf(randIntroNameC,"introP%01d",correctNum);
-        
-        NSString *randIntroName = [NSString stringWithUTF8String:randIntroNameC];
-        
-        pathIntro = [[NSBundle mainBundle] pathForResource:randIntroName ofType:@"mp3"];
-        
-        playerIntro = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:pathIntro] error:nil];
-        
-        [playerIntro setDelegate:self];
-        [playerIntro play];
-    }
-    
-    playIntro=1;
-
-	// Get new game ID details for storing in database
-	currGameID++;
-}
-
-- (void)mySuccess {
-    /* Play the success tune */
-    currentTune=1;
-    [number1 setEnabled:NO];
-    [number2 setEnabled:NO];
-    [number3 setEnabled:NO];
-    [number4 setEnabled:NO];
-    [number5 setEnabled:NO];
-    [number6 setEnabled:NO];
-    [number7 setEnabled:NO];
-    [number8 setEnabled:NO];
-    [number9 setEnabled:NO];
-	[self playSuccessTune];
-    [self myAnimationOne];
-}
-
-
-
-- (void) myAnimationOne
-{
-    [UIView animateWithDuration:2
-                          delay:0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^(void)
-     {
-         if (correctNum!=1) {
-             [number1 setAlpha:0.0f];
-         }
-         if (correctNum!=2) {
-             [number2 setAlpha:0.0f];
-         }
-         if (correctNum!=3) {
-             [number3 setAlpha:0.0f];
-         }
-         if (correctNum!=4) {
-             [number4 setAlpha:0.0f];
-         }
-         if (correctNum!=5) {
-             [number5 setAlpha:0.0f];
-         }
-         if (correctNum!=6) {
-             [number6 setAlpha:0.0f];
-         }
-         if (correctNum!=7) {
-             [number7 setAlpha:0.0f];
-         }
-         if (correctNum!=8) {
-             [number8 setAlpha:0.0f];
-         }
-         if (correctNum!=9) {
-             [number9 setAlpha:0.0f];
-         }
-         
-         [picture1 setAlpha:0.5f];
-         if (correctNum>1) {
-             [picture2 setAlpha:0.5f];
-         }
-         if (correctNum>2) {
-             [picture3 setAlpha:0.5f];
-         }
-         if (correctNum>3) {
-             [picture4 setAlpha:0.5f];
-         }
-         if (correctNum>4) {
-             [picture5 setAlpha:0.5f];
-         }
-         if (correctNum>5) {
-             [picture6 setAlpha:0.5f];
-         }
-         if (correctNum>6) {
-             [picture7 setAlpha:0.5f];
-         }
-         if (correctNum>7) {
-             [picture8 setAlpha:0.5f];
-         }
-         if (correctNum>8) {
-             [picture9 setAlpha:0.5f];
-         }
-     }
-                     completion:^(BOOL finished)
-     {
-     }];
-    
-    [UIView animateWithDuration:4
-                          delay:0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^(void)
-     {
-         switch (correctNum) {
-             case 1:
-                 [number1 setFrame:CGRectMake(482, 354, 100, 100)];
-                 number1.transform = CGAffineTransformScale(number1.transform,4,4);
-                 break;
-             case 2:
-                 [number2 setFrame:CGRectMake(482, 354, 100, 100)];
-                 number2.transform = CGAffineTransformScale(number2.transform,4,4);
-                 break;
-             case 3:
-                 [number3 setFrame:CGRectMake(482, 354, 100, 100)];
-                 number3.transform = CGAffineTransformScale(number3.transform,4,4);
-                 break;
-             case 4:
-                 [number4 setFrame:CGRectMake(482, 354, 100, 100)];
-                 number4.transform = CGAffineTransformScale(number4.transform,4,4);
-                 break;
-             case 5:
-                 [number5 setFrame:CGRectMake(482, 354, 100, 100)];
-                 number5.transform = CGAffineTransformScale(number5.transform,4,4);
-                 break;
-             case 6:
-                 [number6 setFrame:CGRectMake(482, 354, 100, 100)];
-                 number6.transform = CGAffineTransformScale(number6.transform,4,4);
-                 break;
-             case 7:
-                 [number7 setFrame:CGRectMake(482, 354, 100, 100)];
-                 number7.transform = CGAffineTransformScale(number7.transform,4,4);
-                 break;
-             case 8:
-                 [number8 setFrame:CGRectMake(482, 354, 100, 100)];
-                 number8.transform = CGAffineTransformScale(number8.transform,4,4);
-                 break;
-             case 9:
-                 [number9 setFrame:CGRectMake(482, 354, 100, 100)];
-                 number9.transform = CGAffineTransformScale(number9.transform,4,4);
-                 break;
-             default:
-                 break;
-         }
-     }
-                     completion:^(BOOL finished)
-     {
-     }];
-}
-
-- (void) myAnimationTwo
-{
-    [UIView animateWithDuration:4
-                          delay:0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^(void)
-     {
-     }
-                     completion:^(BOOL finished)
-     {
-     }];
-}
-
-- (void) myAnimationThree
-{
-    [UIView animateWithDuration:4
-                          delay:0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^(void)
-     {
-         if (correctNum!=1) {
-             [number1 setAlpha:1.0f];
-         }
-         if (correctNum!=2) {
-             [number2 setAlpha:1.0f];
-         }
-         if (correctNum!=3) {
-             [number3 setAlpha:1.0f];
-         }
-         if (correctNum!=4) {
-             [number4 setAlpha:1.0f];
-         }
-         if (correctNum!=5) {
-             [number5 setAlpha:1.0f];
-         }
-         if (correctNum!=6) {
-             [number6 setAlpha:1.0f];
-         }
-         if (correctNum!=7) {
-             [number7 setAlpha:1.0f];
-         }
-         if (correctNum!=8) {
-             [number8 setAlpha:1.0f];
-         }
-         if (correctNum!=9) {
-             [number9 setAlpha:1.0f];
-         }
-         
-         switch (correctNum) {
-             case 1:
-                 [number1 setFrame:CGRectMake(475, 1, 100, 100)];
-                 break;
-             case 2:
-                 [number2 setFrame:CGRectMake(720, 51, 100, 100)];
-                 break;
-             case 3:
-                 [number3 setFrame:CGRectMake(933, 262, 100, 100)];
-                 break;
-             case 4:
-                 [number4 setFrame:CGRectMake(848, 560, 100, 100)];
-                 break;
-             case 5:
-                 [number5 setFrame:CGRectMake(597, 682, 100, 100)];
-                 break;
-             case 6:
-                 [number6 setFrame:CGRectMake(352, 682, 100, 100)];
-                 break;
-             case 7:
-                 [number7 setFrame:CGRectMake(99, 560, 100, 100)];
-                 break;
-             case 8:
-                 [number8 setFrame:CGRectMake(14, 262, 100, 100)];
-                 break;
-             case 9:
-                 [number9 setFrame:CGRectMake(228, 51, 100, 100)];
-                 break;
-             default:
-                 break;
-         }
-         
-         [picture1 setAlpha:1.0f];
-         if (correctNum>1) {
-             [picture2 setAlpha:1.0f];
-         }
-         if (correctNum>2) {
-             [picture3 setAlpha:1.0f];
-         }
-         if (correctNum>3) {
-             [picture4 setAlpha:1.0f];
-         }
-         if (correctNum>4) {
-             [picture5 setAlpha:1.0f];
-         }
-         if (correctNum>5) {
-             [picture6 setAlpha:1.0f];
-         }
-         if (correctNum>6) {
-             [picture7 setAlpha:1.0f];
-         }
-         if (correctNum>7) {
-             [picture8 setAlpha:1.0f];
-         }
-         if (correctNum>8) {
-             [picture9 setAlpha:1.0f];
-         }
-     }
-                     completion:^(BOOL finished)
-     {
-     }];
-}
-
-/*
-- (void) stopAllTasks {
-    if ([playerPersonal1 isPlaying]) {
-        [playerPersonal1 stop];
-    }
-    if ([playerCongratulations isPlaying]) {
-        [playerCongratulations stop];
-    }
-    if ([playerIntro isPlaying]){
-        [playerIntro stop];
-    }
-    if ([playerWellDone isPlaying]) {
-        [playerWellDone stop];
-    }
-    
-    [UIView animateWithDuration:0.1
-                          delay:0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^(void)
-     {
-         [settingsView setHidden:FALSE];
-     }
-                     completion:^(BOOL finished)
-     {
-     }];
-    
-}
-*/
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -569,11 +125,12 @@
                    name:UIApplicationWillEnterForegroundNotification
                  object:nil];
 	
-	// Set the path up for the player that's going to play the default Well Done message
-    NSString *pathWellDone;
-    pathWellDone = [[NSBundle mainBundle] pathForResource:@"WellDone" ofType:@"mp3"];
-    playerWellDone = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:pathWellDone] error:nil];
-    
+	// Set up event to trigger when the application will lose focus, to stop any players / recorders
+	[center addObserver:self
+			   selector:@selector(resignActive)
+				   name:UIApplicationWillResignActiveNotification
+				 object:nil];
+	
 	// Make sure that the database of sessions & games exists in the documents folder.
 	// If it doesn't, copy from the app resources into the documents folder
 	NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -588,7 +145,7 @@
 		[fileManager copyItemAtPath:resourcePath toPath:dbFile error:&error];
 	}
 	
-	// Set up images
+	// Set up images for digits that will be used in the Information view
 	myDigImages = [NSMutableArray arrayWithObjects:nil count:0];
 	
 	[myDigImages addObject:[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"Dig0"] ofType:@"png"]];
@@ -606,10 +163,15 @@
 	//  the colours of the labels for each item, to show whether they have been already been recorded or not.
     [self enableSetupButtons];
     
-    playSetup=0;
+	//  Set the initial game ID to be zero
 	currGameID=0;
+	
+	[[setupGame alloc] initWithFrame:CGRectMake(0,0,1024,768) owner:self];
 }
 
+// Create a new session ID. A session starts when the Go button is pressed.
+// Retrieve the most recent session ID from the database, add one to it and insert the new session ID back in to the
+// database with current date & time.
 - (void) newSessID {
 	NSInteger oldSessID=0;
 	oldSessID=[self singleNumQuery:@"select max(sessID) from useEvent"];
@@ -638,36 +200,10 @@
 		sqlite3_close(sqlHandle);
 	}
 }
-/*
--(NSInteger) newGameID:(NSInteger)sessID {
-	NSInteger oldSessID=[self singleNumQuery:[NSString stringWithFormat:@"select max(gameID) from useEvent where sessID=%ld",(long)sessID]];
-	
-	const char *insert_sql="insert into gameDetail (sessID,gameID,startDate,startTime) values (?,?,?,?)";
-	sqlite3_stmt *statement;
-	struct sqlite3 *sqlHandle = [self openDB];
-	
-	NSDateFormatter *DateFormatter=[[NSDateFormatter alloc] init];
-	[DateFormatter setDateFormat:@"yyyyMMdd"];
-	NSString *wDate=[DateFormatter stringFromDate:[NSDate date]];
-	[DateFormatter setDateFormat:@"hhmmss"];
-	NSString *wTime=[DateFormatter stringFromDate:[NSDate date]];
-	
-	if (sqlHandle!=NULL) {
-		if (sqlite3_prepare_v2(sqlHandle, insert_sql, -1, &statement, NULL) == SQLITE_OK) {
-			sqlite3_bind_int(statement,1,(int)currSessID);
-			sqlite3_bind_int(statement,2,(int)currGameID);
-			sqlite3_bind_text(statement,3,[wDate UTF8String],-1,SQLITE_TRANSIENT);
-			sqlite3_bind_text(statement,4,[wTime UTF8String],-1,SQLITE_TRANSIENT);
-			sqlite3_step(statement);
-			sqlite3_finalize(statement);
-		}
-		sqlite3_close(sqlHandle);
-	}
 
-	return ++oldSessID;
-}
-*/
-- (void) logNumPress:(NSInteger)numPressed {
+
+// Log the number pressed and the correct number to press in the database
+- (void) logNumPress:(NSInteger)numPressed correctNum:(NSInteger)correctNum {
 	NSDateFormatter *DateFormatter=[[NSDateFormatter alloc] init];
 	[DateFormatter setDateFormat:@"yyyyMMdd"];
 	NSString *wDate=[DateFormatter stringFromDate:[NSDate date]];
@@ -694,9 +230,8 @@
 	}
 }
 
+// Open the information database
 - (struct sqlite3 *) openDB {
-//	NSString *dbFile;
-//	dbFile=[[NSBundle mainBundle] pathForResource:@"see.me.count" ofType:@"db" ];
 	const char *dbPath=[dbFile UTF8String];
 	struct sqlite3 *sqlHandle;
 	if(!(sqlite3_open(dbPath,&sqlHandle) == SQLITE_OK))
@@ -708,6 +243,7 @@
 	}
 }
 
+// Execute a supplied SQL statement that will return a numeric value
 - (int) singleNumQuery:(NSString *)sqlQuery {
 	const char *query_sql=[sqlQuery UTF8String];
 	sqlite3_stmt *statement;
@@ -728,91 +264,25 @@
 	}
 }
 
+// Count how many sessions are logged in the database.
 - (int) numSessions {
 	return [self singleNumQuery:@"select count(*) from (select sessID from useEvent group by sessID)"];
 }
 
+// Count the number of games logged in the database. A game is classed as being between the intro being played and the correct
+// button being pressed.
 - (int) numGames {
 	return [self singleNumQuery:@"select count(gameID) from useEvent"];
 }
-/*
-- (NSMutableArray *) sessionsByGames {
-	const char *query_sql="select eventDate, sessID, count(eventDate) from useEvent group by eventDate, sessID";
-	sqlite3_stmt *statement;
-	struct sqlite3 *sqlHandle = [self openDB];
-	
-	NSMutableArray *retDataX = [NSMutableArray arrayWithObjects:nil count:0];
-	NSMutableArray *retDataY = [NSMutableArray arrayWithObjects:nil count:0];
-	
-	if (sqlHandle!=NULL) {
-		if (sqlite3_prepare_v2(sqlHandle, query_sql, -1, &statement, NULL) == SQLITE_OK) {
-				while  (sqlite3_step(statement)==SQLITE_ROW) {
-					NSString *dateValue = [NSString stringWithFormat:@"%s",sqlite3_column_text(statement,0)];
-					NSString *monthNo = [dateValue substringWithRange:NSMakeRange(4, 2)];
-					NSString *dayNo = [dateValue substringWithRange:NSMakeRange(6, 2)];
-					NSString *axisYvalue;
-					switch ([monthNo intValue]) {
-						case 1:
-							axisYvalue=[NSString stringWithFormat:@"%@-Jan / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
-							break;
-						case 2:
-							axisYvalue=[NSString stringWithFormat:@"%@-Feb / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
-							break;
-						case 3:
-							axisYvalue=[NSString stringWithFormat:@"%@-Mar / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
-							break;
-						case 4:
-							axisYvalue=[NSString stringWithFormat:@"%@-Apr / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
-							break;
-						case 5:
-							axisYvalue=[NSString stringWithFormat:@"%@-May / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
-							break;
-						case 6:
-							axisYvalue=[NSString stringWithFormat:@"%@-Jun / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
-							break;
-						case 7:
-							axisYvalue=[NSString stringWithFormat:@"%@-Jul / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
-							break;
-						case 8:
-							axisYvalue=[NSString stringWithFormat:@"%@-Aug / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
-							break;
-						case 9:
-							axisYvalue=[NSString stringWithFormat:@"%@-Sep / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
-							break;
-						case 10:
-							axisYvalue=[NSString stringWithFormat:@"%@-Oct / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
-							break;
-						case 11:
-							axisYvalue=[NSString stringWithFormat:@"%@-Nov / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
-							break;
-						case 12:
-							axisYvalue=[NSString stringWithFormat:@"%@-Dec / %@",dayNo,[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,1)]];
-							break;
-						default:
-							NSLog(@"What month? %d", [monthNo intValue]);
-					}
-					[retDataX addObject:axisYvalue];
-					[retDataY addObject:[NSString stringWithFormat:@"%d",sqlite3_column_int(statement,2)]];
-				}
-		}
-		sqlite3_finalize(statement);
-		sqlite3_close(sqlHandle);
-	}
-	
-	NSMutableArray *retData = [NSMutableArray arrayWithObjects:nil count:0];
-	[retData addObject:retDataX];
-	[retData addObject:retDataY];
-	
-	return retData;
-}
-*/
 
+// Query the datbase to get an array containing 3 arrays of the Dates for each session, the number of times the wrong button
+// was pressed in each session and the number of times the right button was pressed in each session.
 - (NSMutableArray *) gamesInSession:(NSInteger)daysToDisplay offsetDay:(NSInteger)offsetDay {
 	NSMutableArray *retDataX = [NSMutableArray arrayWithObjects:nil count:0];
 	NSMutableArray *retDataY1 = [NSMutableArray arrayWithObjects:nil count:0];
 	NSMutableArray *retDataY2 = [NSMutableArray arrayWithObjects:nil count:0];
 
-	const char *query_sql="select sd.sessDate, (select count(*) from useevent ue where ue.eventDate = sd.sessDate and numPressed!=numCorrect), (select count(*) from useevent ue where ue.eventDate = sd.sessDate and numPressed=numCorrect)  from sessdetail sd group by sessdate";
+	const char *query_sql="select sd.sessDate, (select count(*) from useevent ue where ue.eventDate = sd.sessDate and numPressed!=numCorrect), (select count(*) from useevent ue where ue.eventDate = sd.sessDate and numPressed=numCorrect)  from sessdetail sd group by sessdate order by sessdate";
 	sqlite3_stmt *statement;
 	struct sqlite3 *sqlHandle = [self openDB];
 	
@@ -876,14 +346,13 @@
 	[retData addObject:retDataX];
 	[retData addObject:retDataY1];
 	[retData addObject:retDataY2];
-
-//	if (daysToDisplay < [retDataX count]) {
-//		retData=[self trimDataByDays:retData numItems:daysToDisplay offsetItem:offsetDay];
-//	}
 	
 	return retData;
 }
 
+// Method to return a subset of a data set, so that it fits in to the space available in the Chart View that will display it.
+// offsetItem being zero means that the right most elements of the data set will be displayed.
+// As offsetItem increases by one, the right most element displayed moves to be one less in the arrays.
 - (NSMutableArray *) trimDataByDays:(NSMutableArray *)theData numItems:(NSInteger)numItems offsetItem:(NSInteger)offsetItem {
 	NSMutableArray *retData = [NSMutableArray arrayWithObjects:nil count:0];
 	NSMutableArray *retRange1 = [NSMutableArray arrayWithObjects:nil count:0];
@@ -911,13 +380,11 @@
 	return retData;
 }
 
-- (double) avgGoesToGetRight {
-	int totalNumRight = [self singleNumQuery:@"select count(*) from useEvent where numPressed=numCorrect"];
-	int totalNum = [self singleNumQuery:@"select count(sessID) from useEvent"];
-		
-	return totalNum / totalNumRight;
-}
-
+// Button to make the Information View visible.
+// Calls methods to display the number of time that the game has been played (i.e. how many times the Go button of the settings
+// page has actually been pressed), the total number of games that have been played (i.e. how many times the intro tune / words
+// have been played / spoken, a Chart View of the dates on which the games has been played (with composite column of wrong answers
+// and right answers) and a Chart View of how many times each of the numbers has been pressed wrongly or rightly.
 - (IBAction)showInfo:(id)sender {
 	[infoView setHidden:NO];
 	
@@ -927,19 +394,23 @@
 	[self showGamesInSession];
 }
 
+// Hide the Information View
 - (IBAction)closeInfo:(id)sender {
 	[infoView setHidden:YES];
 }
 
+// Display a count, of up to 3 digits, of the number of times the game has been played
 - (void) updateSessions {
 	digitalDisplay *myDig1 __attribute__((unused)) = [[digitalDisplay alloc] initWithFrame:CGRectMake(112, 20, 90, 112) containingView:infoView digitImages:myDigImages numberValue:[self numSessions] label:@"Number of times played"];
 }
 
+// Display a count, of up to 3 digits, of the number of games that have been played
 - (void) updateGames {
 	digitalDisplay *myDig1 __attribute__((unused)) = [[digitalDisplay alloc] initWithFrame:CGRectMake(254, 20, 90, 112) containingView:infoView digitImages:myDigImages numberValue:[self numGames] label:@"Number of games played"];
 
 }
 
+// Display heading text for an information item
 - (void) writeHeading:(NSString *)text rect:(CGRect)rect containerView:(UIView *)containerView colour:(UIColor*)colour {
 	UILabel *textLabel;
 	
@@ -952,6 +423,8 @@
 
 }
 
+// Query the database to find, for each digit 1 to 9, how many times a different digit was pressed instead of this digit, and how
+// how many times the correct digit was pressed.
 - (NSMutableArray *) updateNumberCounts {
 	NSMutableArray *returnSet = [NSMutableArray arrayWithObjects:nil count:0];
     NSMutableArray *setNumbs = [NSMutableArray arrayWithObjects:nil count:0];
@@ -1043,6 +516,10 @@
 	return myMax;
 }
 
+// Left arrow button to go back one session in time
+// Hides the left arrow button if earliest session is being displayed
+// All session details have already been retrieved. The trimDataByDays method cuts down the data to what will
+// fit in to the chart display
 - (void) leftButtonPress {
 	viewGameOffset++;
 	
@@ -1065,6 +542,10 @@
 
 }
 
+// Right arrow button to go forward one session in time
+// Hides the right arrow button if the latest session is being displayed
+// All session details have already been retrieved. The trimDataByDays method cuts down the data to what will
+// fit in to the chart display
 - (void) rightButtonPress {
 	viewGameOffset--;
 	
@@ -1087,22 +568,31 @@
 	myChart	=[[ChartView alloc] initWithFrame:CGRectMake(50, 512, 924, 240) containingView:infoView rangeX:restrictedData[0] rangeY1:restrictedData[1] rangeY2:restrictedData[2] yOveride:[self theMaxY] chartLabel:@""];
 }
 
-
 - (void) backToForeground
 {
     /* If the application becomes active again, set the setup page to be the active view by unhiding it */
     [self enableSetupButtons];
-    [number1 setAlpha:0.0f];
-    [number2 setAlpha:0.0f];
-    [number3 setAlpha:0.0f];
-    [number4 setAlpha:0.0f];
-    [number5 setAlpha:0.0f];
-    [number6 setAlpha:0.0f];
-    [number7 setAlpha:0.0f];
-    [number8 setAlpha:0.0f];
-    [number9 setAlpha:0.0f];
     [settingsView setHidden:FALSE];
 	[infoView setHidden:YES];
+}
+
+- (void) resignActive
+{
+	if ([recorder1 isRecording]) {
+		[recorder1 stop];
+	}
+    
+	if ([playerPersonal1 isPlaying]) {
+		[playerPersonal1 stop];
+	}
+	
+	if ([playerSuccess isPlaying]) {
+		[playerSuccess stop];
+	}
+	
+	if ([playerWellDone isPlaying]) {
+		[playerWellDone stop];
+	}
 }
 
 - (void)didReceiveMemoryWarning
@@ -1111,73 +601,14 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)number1:(id)sender {
-	[self logNumPress:1];
-    if (correctNum==1) {
-        [self mySuccess];
-    }
-}
-
-- (IBAction)number2:(id)sender {
-	[self logNumPress:2];
-    if (correctNum==2) {
-        [self mySuccess];
-    }
-}
-
-- (IBAction)number3:(id)sender {
-	[self logNumPress:3];
-    if (correctNum==3) {
-        [self mySuccess];
-    }
-}
-
-- (IBAction)number4:(id)sender {
-	[self logNumPress:4];
-    if (correctNum==4) {
-        [self mySuccess];
-    }
-}
-
-- (IBAction)number5:(id)sender {
-	[self logNumPress:5];
-    if (correctNum==5) {
-        [self mySuccess];
-    }
-}
-
-- (IBAction)number6:(id)sender {
-	[self logNumPress:6];
-    if (correctNum==6) {
-        [self mySuccess];
-    }
-}
-
-- (IBAction)number7:(id)sender {
-	[self logNumPress:7];
-    if (correctNum==7) {
-        [self mySuccess];
-    }
-}
-
-- (IBAction)number8:(id)sender {
-	[self logNumPress:8];
-    if (correctNum==8) {
-        [self mySuccess];
-    }
-}
-
-- (IBAction)number9:(id)sender {
-	[self logNumPress:9];
-    if (correctNum==9) {
-        [self mySuccess];
-    }
-}
-
 - (IBAction)goButton:(id)sender {
     [settingsView setHidden:TRUE];
 	[self newSessID];
-    [self myInit];
+	[self newGame];
+}
+
+- (void) newGame {
+	playGame *pGame __unused = [[playGame alloc] initWithFrame:CGRectMake(0,0,1024,768) owner:self];
 }
 
 - (IBAction)buttonRecord1:(id)sender {
@@ -1186,7 +617,7 @@
 
 
 - (IBAction)buttonPlay1:(id)sender {
-    [self buttonPlayN:1 isPlaySetup:YES];
+    [self buttonPlayN:1];
 }
 
 - (IBAction)buttonDelete1:(id)sender {
@@ -1205,7 +636,7 @@
 }
 
 - (IBAction)buttonPlay2:(id)sender {
-    [self buttonPlayN:2 isPlaySetup:YES];
+    [self buttonPlayN:2];
 }
 
 - (IBAction)buttonDelete2:(id)sender {
@@ -1224,7 +655,7 @@
 }
 
 - (IBAction)buttonPlay3:(id)sender {
-    [self buttonPlayN:3 isPlaySetup:YES];
+    [self buttonPlayN:3];
 }
 
 - (IBAction)buttonDelete3:(id)sender {
@@ -1243,7 +674,7 @@
 }
 
 - (IBAction)buttonPlay4:(id)sender {
-    [self buttonPlayN:4 isPlaySetup:YES];
+    [self buttonPlayN:4];
 }
 
 - (IBAction)buttonDelete4:(id)sender {
@@ -1262,7 +693,7 @@
 }
 
 - (IBAction)buttonPlay5:(id)sender {
-    [self buttonPlayN:5 isPlaySetup:YES];
+    [self buttonPlayN:5];
 }
 
 - (IBAction)buttonDelete5:(id)sender {
@@ -1281,7 +712,7 @@
 }
 
 - (IBAction)buttonPlay6:(id)sender {
-    [self buttonPlayN:6 isPlaySetup:YES];
+    [self buttonPlayN:6];
 }
 
 - (IBAction)buttonDelete6:(id)sender {
@@ -1300,7 +731,7 @@
 }
 
 - (IBAction)buttonPlay7:(id)sender {
-    [self buttonPlayN:7 isPlaySetup:YES];
+    [self buttonPlayN:7];
 }
 
 - (IBAction)buttonDelete7:(id)sender {
@@ -1319,7 +750,7 @@
 }
 
 - (IBAction)buttonPlay8:(id)sender {
-    [self buttonPlayN:8 isPlaySetup:YES];
+    [self buttonPlayN:8];
 }
 
 - (IBAction)buttonDelete8:(id)sender {
@@ -1338,7 +769,7 @@
 }
 
 - (IBAction)buttonPlay9:(id)sender {
-    [self buttonPlayN:9 isPlaySetup:YES];
+    [self buttonPlayN:9];
 }
 
 - (IBAction)buttonDelete9:(id)sender {
@@ -1491,8 +922,9 @@
     [recorder1 recordForDuration:4];
 }
 
-- (void) buttonPlayN:(NSInteger)recordNum isPlaySetup:(NSInteger)isPlaySetup{
+- (void) buttonPlayN:(NSInteger)recordNum {
     // Animation to give feedback on how long the recorder has got to run
+	//
     UITextView *recordLabel;
     UIView *recordProgress;
     switch (recordNum) {
@@ -1547,7 +979,6 @@
      {
          [recordProgress setFrame:CGRectMake(0, 0, 386, 36)];
      }];
-    [recordLabel setBackgroundColor:[UIColor clearColor]];
     
     NSURL *temporaryRecFile;
     //Load recording path from preferences
@@ -1589,178 +1020,16 @@
     [playerPersonal1 setDelegate:self];
     [playerPersonal1 play];
     
-    if (isPlaySetup) {
-        [self disableSetupButtons];
-        playIntro=0;
-        playSetup=1;
-    } else {
-        playSetup=0;
-        playIntro=1;
-    }
+	[self disableSetupButtons];
 }
 
 - (void) audioRecorderDidFinishRecording:(AVAudioRecorder *)avrecorder successfully:(BOOL)flag
 {
     [self enableSetupButtons];
-    
-    [buttonRecord1 setEnabled:YES];
-    [buttonRecord2 setEnabled:YES];
-    [buttonRecord3 setEnabled:YES];
-    [buttonRecord4 setEnabled:YES];
-    [buttonRecord5 setEnabled:YES];
-    [buttonRecord6 setEnabled:YES];
-    [buttonRecord7 setEnabled:YES];
-    [buttonRecord8 setEnabled:YES];
-    [buttonRecord9 setEnabled:YES];
-    [recordWD1 setEnabled:YES];
-    [recordWD2 setEnabled:YES];
-    [recordWD3 setEnabled:YES];
-    [recordWD4 setEnabled:YES];
-    [goButton setEnabled:YES];
 }
 
 - (void) audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag{
-    if (playIntro) {
-        playIntro=0;
-        [number1 setEnabled:YES];
-        [number2 setEnabled:YES];
-        [number3 setEnabled:YES];
-        [number4 setEnabled:YES];
-        [number5 setEnabled:YES];
-        [number6 setEnabled:YES];
-        [number7 setEnabled:YES];
-        [number8 setEnabled:YES];
-        [number9 setEnabled:YES];
-        [UIView animateWithDuration:0.2
-                              delay:0
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^(void)
-         {
-             [number1 setAlpha:1.0f];
-             [number2 setAlpha:1.0f];
-             [number3 setAlpha:1.0f];
-             [number4 setAlpha:1.0f];
-             [number5 setAlpha:1.0f];
-             [number6 setAlpha:1.0f];
-             [number7 setAlpha:1.0f];
-             [number8 setAlpha:1.0f];
-             [number9 setAlpha:1.0f];
-         }
-                         completion:^(BOOL finished)
-         {
-         }];
-        
-    } else if (playSetup) {
-        playSetup=0;
-        [self enableSetupButtons];
-        
-        [buttonRecord1 setEnabled:YES];
-        [buttonRecord2 setEnabled:YES];
-        [buttonRecord3 setEnabled:YES];
-        [buttonRecord4 setEnabled:YES];
-        [buttonRecord5 setEnabled:YES];
-        [buttonRecord6 setEnabled:YES];
-        [buttonRecord7 setEnabled:YES];
-        [buttonRecord8 setEnabled:YES];
-        [buttonRecord9 setEnabled:YES];
-        [recordWD1 setEnabled:YES];
-        [recordWD2 setEnabled:YES];
-        [recordWD3 setEnabled:YES];
-        [recordWD4 setEnabled:YES];
-        [goButton setEnabled:YES];
-    } else {
-        switch (currentTune) {
-            case 1:
-            {
-                currentTune=2;
-                
-                int countPersonal = 0;
-                int itemsPersonal[5];
-                NSURL *temporaryRecFile1, *temporaryRecFile2, *temporaryRecFile3, *temporaryRecFile4, *temporaryRecFile;
-                //Load recording path from preferences
-                NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-                
-                temporaryRecFile1 = [prefs URLForKey:@"personalMessage1"];
-                if (temporaryRecFile1!=NULL) {
-                    itemsPersonal[++countPersonal]=1;
-                }
-                
-                temporaryRecFile2 = [prefs URLForKey:@"personalMessage2"];
-                if (temporaryRecFile2!=NULL) {
-                    itemsPersonal[++countPersonal]=2;
-                }
-                
-                temporaryRecFile3 = [prefs URLForKey:@"personalMessage3"];
-                if (temporaryRecFile3!=NULL) {
-                    itemsPersonal[++countPersonal]=3;
-                }
-                
-                temporaryRecFile4 = [prefs URLForKey:@"personalMessage4"];
-                if (temporaryRecFile4!=NULL) {
-                    itemsPersonal[++countPersonal]=4;
-                }
-                
-                if (countPersonal) {
-                    int randPersonal = rand() % countPersonal + 1;
-                    switch (itemsPersonal[randPersonal]) {
-                        case 1:
-                            temporaryRecFile=temporaryRecFile1;
-                            break;
-                        case 2:
-                            temporaryRecFile=temporaryRecFile2;
-                            break;
-                        case 3:
-                            temporaryRecFile=temporaryRecFile3;
-                            break;
-                        case 4:
-                            temporaryRecFile=temporaryRecFile4;
-                            break;
-                    }
-                    playerPersonal1 = [[AVAudioPlayer alloc] initWithContentsOfURL:temporaryRecFile error:nil];
-                    [playerPersonal1 setDelegate:self];
-                    [playerPersonal1 play];
-                } else {
-                    [playerWellDone setDelegate:self];
-                    [playerWellDone play];
-                }
-                [self myAnimationTwo];
-            }
-                break;
-            case 2:
-            {
-                currentTune=3;
-/*
- [playerCongratulations play];
- */
-				[self playSuccessTune];
-				[self myAnimationThree];
-            }
-                break;
-            case 3:
-            {
-                [UIView animateWithDuration:0.2
-                                      delay:0
-                                    options:UIViewAnimationOptionCurveEaseIn
-                                 animations:^(void)
-                 {
-                     [number1 setAlpha:0.0f];
-                     [number2 setAlpha:0.0f];
-                     [number3 setAlpha:0.0f];
-                     [number4 setAlpha:0.0f];
-                     [number5 setAlpha:0.0f];
-                     [number6 setAlpha:0.0f];
-                     [number7 setAlpha:0.0f];
-                     [number8 setAlpha:0.0f];
-                     [number9 setAlpha:0.0f];
-                 }
-                                 completion:^(BOOL finished)
-                 {
-                 }];
-                [self myInit];
-            }
-                break;
-        }
-    }
+	[self enableSetupButtons];
 }
 
 - (IBAction)recordWD1:(id)sender {
@@ -1768,7 +1037,7 @@
 }
 
 - (IBAction)playWD1:(id)sender {
-    [self buttonPlayWD:1 isPlaySetup:1];
+    [self buttonPlayWD:1];
 }
 
 - (IBAction)deleteWD1:(id)sender {
@@ -1778,7 +1047,7 @@
     [prefs removeObjectForKey:@"personalMessage1"];
     [recordWD1  setEnabled:YES];
     [playWD1    setEnabled:NO];
-    [deleteWD1 setEnabled:NO];
+    [deleteWD1  setEnabled:NO];
     [wd1Message setBackgroundColor:[UIColor clearColor]];
 }
 
@@ -1787,7 +1056,7 @@
 }
 
 - (IBAction)playWD2:(id)sender {
-    [self buttonPlayWD:2 isPlaySetup:2];
+    [self buttonPlayWD:2];
 }
 
 - (IBAction)deleteWD2:(id)sender {
@@ -1797,7 +1066,7 @@
     [prefs removeObjectForKey:@"personalMessage2"];
     [recordWD2  setEnabled:YES];
     [playWD2    setEnabled:NO];
-    [deleteWD2 setEnabled:NO];
+    [deleteWD2  setEnabled:NO];
     [wd2Message setBackgroundColor:[UIColor clearColor]];
 }
 
@@ -1806,7 +1075,7 @@
 }
 
 - (IBAction)playWD3:(id)sender {
-    [self buttonPlayWD:3 isPlaySetup:3];
+    [self buttonPlayWD:3];
 }
 
 - (IBAction)deleteWD3:(id)sender {
@@ -1816,7 +1085,7 @@
     [prefs removeObjectForKey:@"personalMessage3"];
     [recordWD3  setEnabled:YES];
     [playWD3    setEnabled:NO];
-    [deleteWD3 setEnabled:NO];
+    [deleteWD3  setEnabled:NO];
     [wd3Message setBackgroundColor:[UIColor clearColor]];
 }
 
@@ -1825,7 +1094,7 @@
 }
 
 - (IBAction)playWD4:(id)sender {
-    [self buttonPlayWD:4 isPlaySetup:4];
+    [self buttonPlayWD:4];
 }
 
 - (IBAction)deleteWD4:(id)sender {
@@ -1937,7 +1206,7 @@
     [recorder1 recordForDuration:4];
 }
 
-- (void) buttonPlayWD:(NSInteger)recordNum isPlaySetup:(NSInteger)isPlaySetup{
+- (void) buttonPlayWD:(NSInteger)recordNum {
     // Animation to give feedback on how long the recorder has got to run
     UITextView *recordLabel;
     UIView *recordProgress;
@@ -2000,14 +1269,7 @@
     [playerPersonal1 setDelegate:self];
     [playerPersonal1 play];
     
-    if (isPlaySetup) {
-        [self disableSetupButtons];
-        playIntro=0;
-        playSetup=1;
-    } else {
-        playSetup=0;
-        playIntro=1;
-    }
+	[self disableSetupButtons];
 }
 
 - (void) disableSetupButtons {
@@ -2212,44 +1474,22 @@
         [deleteWD4 setEnabled:NO];
         [wd4Message setBackgroundColor:[UIColor clearColor]];
     }
-}
-
-- (void) playSuccessTune {
-	// Set the path up for the players that are  going to play the congratulations tunes
-    NSString *pathSuccess;
 	
-	int randTune;
-	randTune=rand() % 5 + 1;
-	switch (randTune) {
-		case 1:
-			pathSuccess = [[NSBundle mainBundle] pathForResource:@"success01" ofType:@"mp3"];
-			playerSuccess = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:pathSuccess] error:nil];
-
-			break;
-		case 2:
-			pathSuccess = [[NSBundle mainBundle] pathForResource:@"success02" ofType:@"mp3"];
-			playerSuccess = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:pathSuccess] error:nil];
-
-			break;
-		case 3:
-			pathSuccess = [[NSBundle mainBundle] pathForResource:@"success03" ofType:@"mp3"];
-			playerSuccess = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:pathSuccess] error:nil];
-
-			break;
-		case 4:
-			pathSuccess = [[NSBundle mainBundle] pathForResource:@"success04" ofType:@"mp3"];
-			playerSuccess = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:pathSuccess] error:nil];
-			
-			break;
-		case 5:
-			pathSuccess = [[NSBundle mainBundle] pathForResource:@"success05" ofType:@"mp3"];
-			playerSuccess = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:pathSuccess] error:nil];
-			
-			break;
-		default:
-			NSLog(@"Unknown success tune chosen: %d",randTune);
-	}
-	[playerSuccess setDelegate:self];
-	[playerSuccess play];
+	[buttonRecord1 setEnabled:YES];
+    [buttonRecord2 setEnabled:YES];
+    [buttonRecord3 setEnabled:YES];
+    [buttonRecord4 setEnabled:YES];
+    [buttonRecord5 setEnabled:YES];
+    [buttonRecord6 setEnabled:YES];
+    [buttonRecord7 setEnabled:YES];
+    [buttonRecord8 setEnabled:YES];
+    [buttonRecord9 setEnabled:YES];
+    [recordWD1 setEnabled:YES];
+    [recordWD2 setEnabled:YES];
+    [recordWD3 setEnabled:YES];
+    [recordWD4 setEnabled:YES];
+	
+	[goButton setEnabled:YES];
 }
+
 @end
