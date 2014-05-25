@@ -87,7 +87,6 @@
 - (void)goButton {
 	statDatabase *dataStat = [statDatabase alloc];
 	currSessID = [dataStat newSessID:dbFile];
-	NSLog(@"Current Session ID = %ld",(long)currSessID);
 	[self newGame];
 }
 
