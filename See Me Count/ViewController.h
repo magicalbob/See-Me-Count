@@ -28,6 +28,7 @@
 	NSInteger currGameID;
 	NSString *dbFile;
 	NSMutableArray *myDigImages;
+	id gameSetup;
 	
 	AVAudioRecorder *recorder1;
     AVAudioPlayer *playerPersonal1;

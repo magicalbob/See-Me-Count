@@ -167,7 +167,7 @@
     
 	for (int nIdx = 0; nIdx < 9; nIdx++) {
 		if (correctNum > nIdx) {
-			picture[nIdx].image = [UIImage imageWithContentsOfFile:cPath];
+			picture[nIdx].image = [UIImage imageWithData:[NSData dataWithContentsOfFile:cPath]];
 			picture[nIdx].hidden=false;
 		}
 	}

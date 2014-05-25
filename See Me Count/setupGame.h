@@ -13,9 +13,14 @@
 @interface setupGame : UIView <AVSpeechSynthesizerDelegate, AVAudioPlayerDelegate> {
 	id	owner;
 	UIView *panelPane;
+	UIButton *infoButton;
 	UIButton *goButton;
+	NSMutableArray *labNames;
 }
 - (id)initWithFrame:(CGRect)frame owner:(id)vOwner;
 - (void) disableAllButtons;
+- (void) enableAllButtons;
+@property UIView *panelPane;
 @property NSMutableArray *numberSetup;
+@property NSMutableArray *welldoneSetup;
 @end

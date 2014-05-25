@@ -34,6 +34,29 @@
     return self;
 }
 
+- (id)initWithFrame:(CGRect)frame
+			  owner:(id)vOwner
+	  containerView:(UIView *)containerView
+	   labelDefault:(NSString *)vLabelDefault
+		messageName:(NSString *)vMessageName
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        labelDefault = vLabelDefault;
+		labelName = nil;
+		messageName = vMessageName;
+		contView = containerView;
+		mySelf = self;
+		owner = vOwner;
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+		
+		[self displayPanel];
+    }
+    return self;
+}
+
 - (void) displayPanel
 {
 	// Add panel pane for background of the message recorder
@@ -41,18 +64,20 @@
 	panelRec.backgroundColor = [UIColor whiteColor];
 	[contView addSubview:panelRec];
 	[contView bringSubviewToFront:panelRec];
-
-	// Proportion of text for message, the buttons and padding, compared to the size of the rect of the message recorder
-#define PROP_PADDING_X 0.01
-#define PROP_PADDING_Y 0.1
-#define PROP_MESSAGE_WIDTH 0.7
-#define PROP_BUTTON_WIDTH 0.1
 	
 	// Add editable text field for the label of the message. Set the text of the text field to value stored in user settings,
 	// unless there's nothing set in user settings (in which case set to the default value passed when message recorder created.
-	uiMessage = [[UITextField alloc] initWithFrame:CGRectMake(self.frame.size.width * PROP_PADDING_X, self.frame.size.height * PROP_PADDING_Y, self.frame.size.width * PROP_MESSAGE_WIDTH, self.frame.size.height * (1 - 2 * PROP_PADDING_Y))];
+	uiMessage = [[UITextField alloc]
+				 initWithFrame:[self rectMessage]];
 	uiMessage.backgroundColor = [UIColor yellowColor];
-	NSString *savedName = [[NSUserDefaults standardUserDefaults] stringForKey:labelName];
+	NSString *savedName;
+	if (labelName == nil) {
+		savedName = nil;
+		[uiMessage setUserInteractionEnabled:NO];
+	} else {
+		savedName = [[NSUserDefaults standardUserDefaults] stringForKey:labelName];
+		[uiMessage setUserInteractionEnabled:NO];
+	}
 	if (savedName == nil) {
 		uiMessage.text = labelDefault;
 	} else {
@@ -63,26 +88,30 @@
 	[panelRec bringSubviewToFront:uiMessage];
 	
 	// Add record button
-	self.uiRecord = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width * PROP_MESSAGE_WIDTH, uiMessage.frame.origin.y + ((self.frame.size.height * PROP_BUTTON_WIDTH) / 2), self.frame.size.width * PROP_BUTTON_WIDTH, 30)];
+	self.uiRecord = [[UIButton alloc]
+					 initWithFrame:[self rectButRec]];
 	[self.uiRecord setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"recButton" ofType:@"png"] ] forState:UIControlStateNormal];
 	[panelRec addSubview:self.uiRecord];
 	[panelRec bringSubviewToFront:self.uiRecord];
 	
 	// Add play button
-	self.uiPlay = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width * PROP_MESSAGE_WIDTH + self.frame.size.width * PROP_BUTTON_WIDTH, uiMessage.frame.origin.y + ((self.frame.size.height * PROP_BUTTON_WIDTH) / 2), self.frame.size.width * PROP_BUTTON_WIDTH, 30)];
+	self.uiPlay = [[UIButton alloc]
+				   initWithFrame:[self rectButPlay]];
 	[self.uiPlay setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"playButton" ofType:@"png"] ] forState:UIControlStateNormal];
 	[panelRec addSubview:self.uiPlay];
 	[panelRec bringSubviewToFront:self.uiPlay];
 	
 	// Add delete button
-	self.uiDelete = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width * PROP_MESSAGE_WIDTH + self.frame.size.width * PROP_BUTTON_WIDTH *2, uiMessage.frame.origin.y + ((self.frame.size.height * PROP_BUTTON_WIDTH) / 2), self.frame.size.width * PROP_BUTTON_WIDTH, 30)];
+	self.uiDelete = [[UIButton alloc]
+					 initWithFrame:[self rectButDel]];
 	[self.uiDelete setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"subButton" ofType:@"png"] ] forState:UIControlStateNormal];
 	[panelRec addSubview:self.uiDelete];
 	[panelRec bringSubviewToFront:self.uiDelete];
 	
-	//Load recording path from preferences
-	[self enableAllButtons];
+	// Load enable buttons (and set the messages to be green or yellow) depending on what recordings have been made
+	[self enableButtons];
 	
+	// Set the actions of the buttons
 	[self.uiRecord addTarget:self action:@selector(buttonRecord) forControlEvents:UIControlEventTouchUpInside];
 	[self.uiPlay addTarget:self action:@selector(buttonPlay) forControlEvents:UIControlEventTouchUpInside];
 	[self.uiDelete addTarget:self action:@selector(buttonDelete) forControlEvents:UIControlEventTouchUpInside];
@@ -127,17 +156,17 @@
     
     // Animation to give feedback on how long the recorder has got to run
 	UIView *recordMain, *recordProgress, *recordRecord;
-	recordMain=[[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width * PROP_MESSAGE_WIDTH, uiMessage.frame.origin.y + ((self.frame.size.height * PROP_BUTTON_WIDTH) / 2), self.frame.size.width * (1 - PROP_MESSAGE_WIDTH), 36)];
+	recordMain=[[UIView alloc] initWithFrame:[self rectFeedbackStart]];
 	recordMain.backgroundColor = [UIColor redColor];
 	[panelRec addSubview:recordMain];
 	[panelRec bringSubviewToFront:recordMain];
 	
-	recordRecord=[[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width * PROP_MESSAGE_WIDTH, uiMessage.frame.origin.y + ((self.frame.size.height * PROP_BUTTON_WIDTH) / 2), self.frame.size.width * (1 - PROP_MESSAGE_WIDTH), 36)];
+	recordRecord=[[UIView alloc] initWithFrame:[self rectFeedbackStart]];
 	recordRecord.backgroundColor = [UIColor blueColor];
 	[panelRec addSubview:recordRecord];
 	[panelRec bringSubviewToFront:recordRecord];
 	
-	recordProgress=[[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width * PROP_MESSAGE_WIDTH, uiMessage.frame.origin.y + ((self.frame.size.height * PROP_BUTTON_WIDTH) / 2), self.frame.size.width * (1 - PROP_MESSAGE_WIDTH), 36)];
+	recordProgress=[[UIView alloc] initWithFrame:[self rectFeedbackStart]];
 	recordProgress.backgroundColor = [UIColor yellowColor];
 	[panelRec addSubview:recordProgress];
 	[panelRec bringSubviewToFront:recordProgress];
@@ -147,7 +176,7 @@
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^(void)
      {
-         [recordProgress setFrame:CGRectMake((self.frame.size.width * PROP_MESSAGE_WIDTH) +  self.frame.size.width * (1 - PROP_MESSAGE_WIDTH), uiMessage.frame.origin.y + ((self.frame.size.height * PROP_BUTTON_WIDTH) / 2), uiMessage.frame.origin.y + ((self.frame.size.width * PROP_BUTTON_WIDTH) / 2), 36)];
+         [recordProgress setFrame:[self rectFeedbackFinish]];
      }
                      completion:^(BOOL finished)
      {
@@ -175,17 +204,17 @@
 	
     // Animation to give feedback on how long the recorder has got to run
 	UIView *recordMain, *recordProgress, *recordRecord;
-	recordMain=[[UIView alloc] initWithFrame:CGRectMake(240, 0, 200, 36)];
+	recordMain=[[UIView alloc] initWithFrame:[self rectFeedbackStart]];
 	recordMain.backgroundColor = [UIColor redColor];
 	[panelRec addSubview:recordMain];
 	[panelRec bringSubviewToFront:recordMain];
 	
-	recordRecord=[[UIView alloc] initWithFrame:CGRectMake(240, 0, 200, 36)];
+	recordRecord=[[UIView alloc] initWithFrame:[self rectFeedbackStart]];
 	recordRecord.backgroundColor = [UIColor blueColor];
 	[panelRec addSubview:recordRecord];
 	[panelRec bringSubviewToFront:recordRecord];
 	
-	recordProgress=[[UIView alloc] initWithFrame:CGRectMake(240, 0, 200, 36)];
+	recordProgress=[[UIView alloc] initWithFrame:[self rectFeedbackStart]];
 	recordProgress.backgroundColor = [UIColor yellowColor];
 	[panelRec addSubview:recordProgress];
 	[panelRec bringSubviewToFront:recordProgress];
@@ -195,7 +224,7 @@
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^(void)
      {
-         [recordProgress setFrame:CGRectMake(440, 0, 0, 36)];
+         [recordProgress setFrame:[self rectFeedbackFinish]];
      }
                      completion:^(BOOL finished)
      {
@@ -211,7 +240,7 @@
 	
 	[prefs removeObjectForKey:messageName];
 	
-	[self enableAllButtons];
+	[self enableButtons];
 }
 
 - (void) audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
@@ -222,16 +251,25 @@
 	[owner enableAllButtons];
 }
 
-- (void) enableAllButtons {
+- (void)disableButtons
+{
+	[[self uiDelete] setEnabled:NO];
+	[[self uiPlay] setEnabled:NO];
+	[[self uiRecord] setEnabled:NO];
+}
+
+- (void) enableButtons {
 	//Load recording path from preferences
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	
     if ([prefs URLForKey:messageName]!=NULL) {
         [self.uiPlay setEnabled:YES];
         [self.uiDelete setEnabled:YES];
+		uiMessage.backgroundColor = [UIColor greenColor];
     } else {
         [self.uiPlay setEnabled:NO];
         [self.uiDelete setEnabled:NO];
+		uiMessage.backgroundColor = [UIColor yellowColor];
     }
 	
 	[self.uiRecord setEnabled:YES];
@@ -289,6 +327,138 @@ static inline BOOL IsEmpty(id thing) {
 
 		[[NSUserDefaults standardUserDefaults] setObject:uiMessage.text forKey:labelName];
 	}
+}
+
+
+- (CGRect) rectMessage
+{
+	float bSize = [self buttonSize];
+	
+	if ([self buttonPosAdjust]) {
+		return CGRectMake(0.020 * panelRec.frame.size.width,
+						  0.109 * panelRec.frame.size.height,
+						  (0.900 * panelRec.frame.size.width) - 3 * bSize,
+						  0.783 * panelRec.frame.size.height);
+	} else {
+		return CGRectMake(0.020 * panelRec.frame.size.width,
+						  0.109 * panelRec.frame.size.height,
+						  0.754 * panelRec.frame.size.width,
+						  0.783 * panelRec.frame.size.height);
+	}
+}
+
+- (float) buttonSize
+{
+	float relWidth, relHeight;
+	
+	relWidth = 0.059 * panelRec.frame.size.width;
+	relHeight = 0.652 * panelRec.frame.size.height;
+	
+	if (relWidth > relHeight) {
+		return relWidth;
+	}
+	
+	return relHeight;
+}
+
+- (BOOL) buttonPosAdjust
+{
+	float relWidth, relHeight;
+	
+	relWidth = 0.059 * panelRec.frame.size.width;
+	relHeight = 0.652 * panelRec.frame.size.height;
+	
+	if (relWidth > relHeight) {
+		return NO;
+	}
+	
+	return YES;
+}
+
+- (CGRect) rectFeedbackStart
+{
+	float bSize = [self buttonSize];
+	
+	if ([self buttonPosAdjust]) {
+		return CGRectMake((0.940 * panelRec.frame.size.width) - 3 * bSize,
+						  0.109 * panelRec.frame.size.height,
+						  (0.040 * panelRec.frame.size.width) + 3 * bSize,
+						  0.783 * panelRec.frame.size.height);
+	} else {
+		return CGRectMake(0.793 * panelRec.frame.size.width,
+						  0.109 * panelRec.frame.size.height,
+						  0.188 * panelRec.frame.size.width,
+						  0.783 * panelRec.frame.size.height);
+	}
+}
+
+- (CGRect) rectFeedbackFinish
+{
+	if ([self buttonPosAdjust]) {
+		return CGRectMake((0.980 * panelRec.frame.size.width),
+						  0.109 * panelRec.frame.size.height,
+						  0,
+						  0.783 * panelRec.frame.size.height);
+	} else {
+		return CGRectMake(0.981 * panelRec.frame.size.width,
+						  0.109 * panelRec.frame.size.height,
+						  0,
+						  0.783 * panelRec.frame.size.height);
+	}
+}
+
+- (CGRect) rectButRec
+{
+	float bSize = [self buttonSize];
+	if ([self buttonPosAdjust]) {
+		return CGRectMake((0.940 * panelRec.frame.size.width) - 3 * bSize,
+						  (0.500 * panelRec.frame.size.height) - (bSize / 2),
+						  bSize,
+						  bSize);
+	} else {
+		return CGRectMake(((0.822 * panelRec.frame.size.width) - (bSize / 2 )),
+						  (0.500 * panelRec.frame.size.height) - (bSize / 2),
+						  bSize,
+						  bSize);
+	}
+}
+
+- (CGRect) rectButPlay
+{
+	float bSize = [self buttonSize];
+	if ([self buttonPosAdjust]) {
+		return CGRectMake((0.960 * panelRec.frame.size.width) - 2 * bSize,
+						  (0.500 * panelRec.frame.size.height) - (bSize / 2),
+						  bSize,
+						  bSize);
+	} else {
+		return CGRectMake(((0.887 * panelRec.frame.size.width) - (bSize / 2 )),
+						  (0.500 * panelRec.frame.size.height) - (bSize / 2),
+						  bSize,
+						  bSize);
+	}
+}
+
+- (CGRect) rectButDel
+{
+	float bSize = [self buttonSize];
+	
+	if ([self buttonPosAdjust]) {
+		return CGRectMake((0.980 * panelRec.frame.size.width) - bSize,
+						  (0.500 * panelRec.frame.size.height) - (bSize / 2),
+						  bSize,
+						  bSize);
+	} else {
+		return CGRectMake((0.951 * panelRec.frame.size.width) - (bSize / 2 ),
+						  (0.500 * panelRec.frame.size.height) - (bSize / 2),
+						  bSize,
+						  bSize);
+	}
+}
+
+- (void)textAlignment:(NSTextAlignment)textAlignment
+{
+	uiMessage.textAlignment = textAlignment;
 }
 
 /*

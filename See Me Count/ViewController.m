@@ -161,12 +161,12 @@
 	
 	//  Set which buttons are available on the initial settings screen. The method that does this also sets
 	//  the colours of the labels for each item, to show whether they have been already been recorded or not.
-    [self enableSetupButtons];
+    // [self enableSetupButtons];
     
 	//  Set the initial game ID to be zero
 	currGameID=0;
 	
-	[[setupGame alloc] initWithFrame:CGRectMake(0,0,1024,768) owner:self];
+	gameSetup = [[setupGame alloc] initWithFrame:CGRectMake(0,0,1024,768) owner:self];
 }
 
 // Create a new session ID. A session starts when the Go button is pressed.
@@ -387,6 +387,7 @@
 // and right answers) and a Chart View of how many times each of the numbers has been pressed wrongly or rightly.
 - (IBAction)showInfo:(id)sender {
 	[infoView setHidden:NO];
+	[settingsView bringSubviewToFront:infoView];
 	
 	[self updateSessions];
 	[self updateGames];
@@ -396,7 +397,10 @@
 
 // Hide the Information View
 - (IBAction)closeInfo:(id)sender {
+	setupGame *gSet = gameSetup;
+	
 	[infoView setHidden:YES];
+	[gSet.panelPane setHidden:NO];
 }
 
 // Display a count, of up to 3 digits, of the number of times the game has been played
@@ -571,7 +575,7 @@
 - (void) backToForeground
 {
     /* If the application becomes active again, set the setup page to be the active view by unhiding it */
-    [self enableSetupButtons];
+    //[self enableSetupButtons];
     [settingsView setHidden:FALSE];
 	[infoView setHidden:YES];
 }
