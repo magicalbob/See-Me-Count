@@ -81,7 +81,7 @@
 							 dWidth+1,
 							 dHeight);
 	
-	int digH, digT, digU;
+	long digH, digT, digU;
 	
 	digH=self.numberValue/100;
 	digT=(self.numberValue-(100*digH))/10;
@@ -135,7 +135,7 @@
 		float fSize=((self.bounds.size.width * self.bounds.size.height) / (90 * 112)) * 14.0;
 		UIColor *textColor = [UIColor whiteColor];
 		CGColorRef color = textColor.CGColor;
-		CTFontRef font = CTFontCreateWithName((CFStringRef)@"Arial", fSize, NULL);
+		CTFontRef font = CTFontCreateWithName((CFStringRef)@"ArialMT", fSize, NULL);
 		CTTextAlignment theAlignment = kCTCenterTextAlignment;
 		CFIndex theNumberOfSettings = 1;
 		CTParagraphStyleSetting theSettings[1] =

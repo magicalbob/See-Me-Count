@@ -24,6 +24,7 @@
     AVAudioPlayer *playerWellDone;
 	NSTimer *aTimer;
 	NSTimer *bTimer;
+	id dataStat;
 }
 - (id)initWithFrame:(CGRect)frame owner:(id)vOwner;
 @end

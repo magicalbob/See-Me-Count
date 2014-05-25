@@ -21,6 +21,8 @@
 		
 		[self displayGame];
 		
+		dataStat = [statDatabase alloc];
+		
 		// Set up event to trigger when the application will lose focus, to display get rid of the game's view
 		NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 		[center addObserver:self
@@ -135,7 +137,11 @@
 		if (numPressed == number[nIdx]) {
 			ViewController *myView;
 			myView = owner;
-			[myView logNumPress:(nIdx+1) correctNum:correctNum];
+			[dataStat logNumPress:[myView dbFile]
+					   currSessID:[myView currSessID]
+					   currGameID:[myView currGameID]
+					   numPressed:(nIdx+1)
+					   correctNum:correctNum];
 			break;
 		}
 	}

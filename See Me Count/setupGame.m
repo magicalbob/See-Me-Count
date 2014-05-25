@@ -88,15 +88,12 @@
 {
 	ViewController *vc = owner;
 	
-	[vc goButton:owner];
+	[vc goButton];
 }
 
 - (void) showInfo
 {
-	ViewController *vc = owner;
-	
-	[panelPane setHidden:YES];
-	[vc showInfo:owner];
+	statsView *myStats __unused = [[statsView alloc] initWithFrame:CGRectMake(0,0,1024,768) owner:owner];
 }
 
 - (void) enableAllButtons
@@ -104,6 +101,10 @@
 	for (int dIdx=0; dIdx < [numberSetup count]; dIdx++)
 	{
 		[[numberSetup objectAtIndex:dIdx] enableButtons];
+	}
+	for (int dIdx=0; dIdx < [welldoneSetup count]; dIdx++)
+	{
+		[[welldoneSetup objectAtIndex:dIdx] enableButtons];
 	}
 }
 

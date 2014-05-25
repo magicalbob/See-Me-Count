@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C10BA8A1931F71800197046 /* statsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C10BA891931F71800197046 /* statsView.m */; };
+		3C10BA8D193229CD00197046 /* statDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C10BA8C193229CD00197046 /* statDatabase.m */; };
 		3C2FA4A51876141200322132 /* go.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C2FA4A41876141200322132 /* go.png */; };
 		3C55220E18ED97E100B52E0A /* setupGame.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C55220D18ED97E100B52E0A /* setupGame.m */; };
 		3C55221118EDA53000B52E0A /* messageRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C55221018EDA53000B52E0A /* messageRecorder.m */; };
@@ -83,6 +85,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3C10BA881931F71800197046 /* statsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = statsView.h; sourceTree = "<group>"; };
+		3C10BA891931F71800197046 /* statsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = statsView.m; sourceTree = "<group>"; };
+		3C10BA8B193229CD00197046 /* statDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = statDatabase.h; sourceTree = "<group>"; };
+		3C10BA8C193229CD00197046 /* statDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = statDatabase.m; sourceTree = "<group>"; };
 		3C2FA4A41876141200322132 /* go.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = go.png; sourceTree = "<group>"; };
 		3C55220C18ED97E100B52E0A /* setupGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = setupGame.h; sourceTree = "<group>"; };
 		3C55220D18ED97E100B52E0A /* setupGame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = setupGame.m; sourceTree = "<group>"; };
@@ -223,6 +229,10 @@
 				3C6208041872032B002388C4 /* AppDelegate.m */,
 				3C6208091872032B002388C4 /* ViewController.h */,
 				3C62080A1872032B002388C4 /* ViewController.m */,
+				3C10BA8B193229CD00197046 /* statDatabase.h */,
+				3C10BA8C193229CD00197046 /* statDatabase.m */,
+				3C10BA881931F71800197046 /* statsView.h */,
+				3C10BA891931F71800197046 /* statsView.m */,
 				3C55220C18ED97E100B52E0A /* setupGame.h */,
 				3C55220D18ED97E100B52E0A /* setupGame.m */,
 				3C55220F18EDA53000B52E0A /* messageRecorder.h */,
@@ -499,6 +509,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C10BA8D193229CD00197046 /* statDatabase.m in Sources */,
 				3C930D2C18AAA1EF000F7B9F /* Common.m in Sources */,
 				3C55220E18ED97E100B52E0A /* setupGame.m in Sources */,
 				3C62080B1872032B002388C4 /* ViewController.m in Sources */,
@@ -507,6 +518,7 @@
 				3C930D2B18AAA1EF000F7B9F /* ChartView.m in Sources */,
 				3C6208011872032B002388C4 /* main.m in Sources */,
 				3C55221118EDA53000B52E0A /* messageRecorder.m in Sources */,
+				3C10BA8A1931F71800197046 /* statsView.m in Sources */,
 				3C930D2618AA2587000F7B9F /* digitalDisplay.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

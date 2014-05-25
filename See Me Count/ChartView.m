@@ -140,7 +140,7 @@
 	
 	// get the maximum Y value in the data range, to work out the Y scale
 	
-	__block int maxYValue=0;
+	__block long maxYValue=0;
 
 	if (overideY>0) {
 		maxYValue=overideY;
@@ -148,7 +148,6 @@
 		[self.rangeY1 enumerateObjectsUsingBlock:^(id obj,
 											  NSUInteger idx,
 											  BOOL *stop) {
-			NSLog(@"%ld: %@", (unsigned long)idx, obj);
 			if (self.rangeY2) {
 				if ([obj integerValue] + [self.rangeY2[idx] integerValue]> maxYValue) {
 					maxYValue=[obj integerValue] + [self.rangeY2[idx] integerValue];
@@ -165,7 +164,7 @@
 	
 	// get the count of X values to work out the X scale
 	
-	int countX = [self.rangeX count];
+	long countX = [self.rangeX count];
 
 	// work out width of each column, including padding, and height of each unit.
 	
@@ -191,7 +190,7 @@
 	for (int divCnt=0; divCnt < [self.rangeX count]; divCnt++) {
 		float fSize=((self.bounds.size.width * self.bounds.size.height) / (600 * 600)) * 20.0;
 		
-		CTFontRef fontRef = CTFontCreateWithName((CFStringRef)@"Arial", fSize, NULL);
+		CTFontRef fontRef = CTFontCreateWithName((CFStringRef)@"ArialMT", fSize, NULL);
 		NSDictionary *attrDictionary = [NSDictionary dictionaryWithObjectsAndKeys:(__bridge id)fontRef, (NSString *)kCTFontAttributeName, (id)[[UIColor blackColor] CGColor],  (NSString *) kCTStrokeColorAttributeName, (id)[NSNumber numberWithFloat:-3.0], (NSString *)kCTStrokeWidthAttributeName, nil];
 		
 		NSAttributedString *attString = [[NSAttributedString alloc] initWithString:self.rangeX[divCnt] attributes:attrDictionary];
@@ -211,7 +210,7 @@
 		if (((maxYValue>19)&&(divCnt % 10 == 9))||(maxYValue<20)) {
 			float fSize=((self.bounds.size.width * self.bounds.size.height) / (600 * 600)) * 20.0;
 			
-			CTFontRef fontRef = CTFontCreateWithName((CFStringRef)@"Arial", fSize, NULL);
+			CTFontRef fontRef = CTFontCreateWithName((CFStringRef)@"ArialMT", fSize, NULL);
 			NSDictionary *attrDictionary = [NSDictionary dictionaryWithObjectsAndKeys:(__bridge id)fontRef, (NSString *)kCTFontAttributeName, (id)[[UIColor blackColor] CGColor],  (NSString *) kCTStrokeColorAttributeName, (id)[NSNumber numberWithFloat:-3.0], (NSString *)kCTStrokeWidthAttributeName, nil];
 			NSAttributedString *attString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%d", divCnt+1] attributes:attrDictionary];
 		
@@ -229,7 +228,7 @@
 	// Print the chart's label
 	float fSize=((self.bounds.size.width * self.bounds.size.height) / (600 * 600)) * 20.0;
 	
-	CTFontRef fontRef = CTFontCreateWithName((CFStringRef)@"Arial", fSize, NULL);
+	CTFontRef fontRef = CTFontCreateWithName((CFStringRef)@"ArialMT", fSize, NULL);
 	NSDictionary *attrDictionary = [NSDictionary dictionaryWithObjectsAndKeys:(__bridge id)fontRef, (NSString *)kCTFontAttributeName, (id)[[UIColor blackColor] CGColor],  (NSString *) kCTStrokeColorAttributeName, (id)[NSNumber numberWithFloat:-3.0], (NSString *)kCTStrokeWidthAttributeName, nil];
 	NSAttributedString *attString = [[NSAttributedString alloc] initWithString:self.chartLabel attributes:attrDictionary];
 	

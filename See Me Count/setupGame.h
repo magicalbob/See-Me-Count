@@ -9,10 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "ViewController.h"
 #import "messageRecorder.h"
+#import "statsView.h"
 
 @interface setupGame : UIView <AVSpeechSynthesizerDelegate, AVAudioPlayerDelegate> {
 	id	owner;
-	UIView *panelPane;
 	UIButton *infoButton;
 	UIButton *goButton;
 	NSMutableArray *labNames;
