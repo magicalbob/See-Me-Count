@@ -155,17 +155,19 @@
     
     char randPicNameC[8];
     NSString *cPath;
-    int lastPic;
+    //int lastPic;
+	ViewController *vc = owner;
     
     // Randomise the timer, and select which of the buttons will have the correct picture
 	// Make sure that the number of items isn't the same as the last game
     srand((unsigned int)time(NULL));
     
-    lastPic=correctNum;
+    //lastPic=correctNum;
     do {
         correctNum=rand() % 9 + 1;
-    } while (correctNum==lastPic);
-    
+    } while (correctNum==[vc lastNumber]);
+    vc.lastNumber= correctNum;
+	
     sprintf(randPicNameC,"Pic%01d",correctNum);
     NSString *randPicName = [NSString stringWithUTF8String:randPicNameC];
     

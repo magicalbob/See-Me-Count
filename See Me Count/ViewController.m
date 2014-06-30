@@ -24,6 +24,7 @@
 @synthesize playerWellDone;
 @synthesize currentTune;
 @synthesize dbFile;
+@synthesize lastNumber;
 
 - (void)viewDidLoad
 {
@@ -55,6 +56,8 @@
 	
 	//  Set the initial game ID to be zero
 	currGameID=0;
+	
+	lastNumber = 0;
 	
 	gameSetup = [[setupGame alloc] initWithFrame:CGRectMake(0,0,1024,768) owner:self];
 }

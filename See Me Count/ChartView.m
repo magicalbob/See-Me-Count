@@ -207,7 +207,8 @@
 
 	for (int divCnt=0; divCnt < maxYValue; divCnt++) {
 		// Reduce the number of labels printed if there's a lot of entries in the Y scale
-		if (((maxYValue>19)&&(divCnt % 10 == 9))||(maxYValue<20)) {
+
+		if ([self needYScaleDivide:divCnt maxYValue:maxYValue]) {
 			float fSize=((self.bounds.size.width * self.bounds.size.height) / (600 * 600)) * 20.0;
 			
 			CTFontRef fontRef = CTFontCreateWithName((CFStringRef)@"ArialMT", fSize, NULL);
@@ -249,7 +250,7 @@
 	
 	for (int divCnt=1; divCnt <= maxYValue; divCnt++) {
 		// Reduce the number of dividing lines drawn if there's a lot of entries in the Y scale
-		if (((maxYValue>19)&&(divCnt % 10 == 9))||(maxYValue<20)) {
+		if ([self needYScaleDivide:divCnt maxYValue:maxYValue]) {
 			startPoint = CGPointMake(paperRect.origin.x + (paperRect.size.width * axisDiv),
 								 ((1-axisPos-(divCnt*unitHeight)) * self.bounds.size.height) + self.bounds.origin.y);
 			endPoint = CGPointMake(paperRect.origin.x + (paperRect.size.width * (1-axisBorder)),
@@ -304,6 +305,58 @@
 			}
 		}];
 	}
+}
+
+- (BOOL) needYScaleDivide:(int)divCnt maxYValue:(NSInteger)maxYValue
+{
+	int tmpCnt = divCnt+1;
+	BOOL drawDivide = NO;
+	
+	if (maxYValue > 49999) {
+		if (tmpCnt % 10000 == 0) {
+			drawDivide = YES;
+		}
+	} else if (maxYValue > 19999) {
+		if (tmpCnt % 5000 == 0) {
+			drawDivide = YES;
+		}
+	} else if (maxYValue > 9999) {
+		if (tmpCnt % 2000 == 0) {
+			drawDivide = YES;
+		}
+	} else if (maxYValue > 4999) {
+		if (tmpCnt % 1000 == 0) {
+			drawDivide = YES;
+		}
+	} else if (maxYValue > 1999) {
+		if (tmpCnt % 500 == 0) {
+			drawDivide = YES;
+		}
+	} else if (maxYValue > 999) {
+		if (tmpCnt % 200 == 0) {
+			drawDivide = YES;
+		}
+	} else if (maxYValue > 499) {
+		if (tmpCnt % 100 == 0) {
+			drawDivide  = YES;
+		}
+	} else if (maxYValue > 199) {
+		if (tmpCnt % 50 == 0) {
+			drawDivide = YES;
+		}
+	} else if (maxYValue > 99) {
+		if (tmpCnt % 20 == 0) {
+			drawDivide = YES;
+		}
+	} else if (maxYValue > 9) {
+		if (tmpCnt % 10 == 0) {
+			drawDivide = YES;
+		}
+	} else {
+		drawDivide = YES;
+	}
+	
+	return drawDivide;
 }
 
 @end

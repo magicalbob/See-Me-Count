@@ -91,6 +91,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
+      customArchiveName = "See Me Count"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

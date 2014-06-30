@@ -28,6 +28,8 @@
 	AVAudioPlayer *playerSuccess;
     AVAudioPlayer *playerIntro;
     AVAudioPlayer *playerWellDone;
+	
+	NSInteger lastNumber;
 };
 
 @property AVAudioPlayer *playerPersonal1;
@@ -39,6 +41,7 @@
 @property int currentTune;
 @property ViewController *pGame;
 @property NSString *dbFile;
+@property NSInteger lastNumber;
 
 - (void) newGame;
 - (void) goButton;

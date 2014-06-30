@@ -57,7 +57,7 @@
 	float dHeight;
 	float lHeight;
 
-	dWidth=self.bounds.size.width/3;
+	dWidth=self.bounds.size.width/5;
 	if (self.digLabel==nil) {
 		lHeight=0;
 		dHeight=self.bounds.size.height;
@@ -81,14 +81,24 @@
 							 dWidth+1,
 							 dHeight);
 	
-	long digH, digT, digU;
+	CGRect dig4 = CGRectMake(self.bounds.origin.x+3*dWidth,
+							 self.bounds.origin.y,
+							 dWidth+1,
+							 dHeight);
 	
-	digH=self.numberValue/100;
-	digT=(self.numberValue-(100*digH))/10;
-	digU=self.numberValue-(100*digH)-(10*digT);
+	CGRect dig5 = CGRectMake(self.bounds.origin.x+4*dWidth,
+							 self.bounds.origin.y,
+							 dWidth+1,
+							 dHeight);
+	
+	long digTK,digK, digH, digT, digU;
+	digTK=(self.numberValue / 10000) % 10;
+	digK=((self.numberValue-(10000*digTK)) / 1000) % 100;
+	digH=((self.numberValue-(10000*digTK)-(1000*digK))/ 100) % 1000;
+	digT=((self.numberValue-(10000*digTK)-(1000*digK)-(100*digH))/10) % 10000;
+	digU=(self.numberValue-(10000*digTK)-(1000*digK)-(100*digH)-(10*digT)) % 100000;
 	
 	NSString *dPath;
-
 	
 	// Flip the coordinate system
 	CGContextSetTextMatrix(context, CGAffineTransformIdentity);
@@ -97,6 +107,28 @@
 
 	UIImage *uiImage;
 	
+	if (digTK>0) {
+		dPath = self.digitImages[digTK];
+		
+		uiImage = [UIImage imageWithContentsOfFile:dPath];
+		
+		CGContextDrawImage (
+							context,
+							dig1,
+							uiImage.CGImage);
+	}
+	
+	if (digK>0) {
+		dPath = self.digitImages[digK];
+		
+		uiImage = [UIImage imageWithContentsOfFile:dPath];
+		
+		CGContextDrawImage (
+							context,
+							dig2,
+							uiImage.CGImage);
+	}
+	
 	if (digH>0) {
 		dPath = self.digitImages[digH];
 
@@ -104,7 +136,7 @@
 	
 		CGContextDrawImage (
 						context,
-						dig1,
+						dig3,
 						uiImage.CGImage);
 	}
 	
@@ -115,7 +147,7 @@
 	
 		CGContextDrawImage (
 						context,
-						dig2,
+						dig4,
 						uiImage.CGImage);
 	}
 	
@@ -125,7 +157,7 @@
 
 	CGContextDrawImage (
 						context,
-						dig3,
+						dig5,
 						uiImage.CGImage);
 
 	if (self.digLabel!=nil) {
