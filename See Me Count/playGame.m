@@ -85,7 +85,7 @@
 	
 	number[2] = [[UIButton alloc] initWithFrame:CGRectMake(923,262,100,100)];
 	[number[2] setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"No3" ofType:@"png"]] forState:UIControlStateNormal];
-	
+    
 	number[3] = [[UIButton alloc] initWithFrame:CGRectMake(838,545,100,100)];
 	[number[3] setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"No4" ofType:@"png"]] forState:UIControlStateNormal];
 	
@@ -122,9 +122,9 @@
 		[panelPane addSubview:number[nIdx]];
 		[panelPane bringSubviewToFront:number[nIdx]];
 		[number[nIdx] addTarget:mySelf action:@selector(numberPressed:) forControlEvents:UIControlEventTouchDown];
-		[number[nIdx] setEnabled:NO];
+		[number[nIdx] setEnabled:YES];
 		number[nIdx].adjustsImageWhenDisabled = NO;
-		[number[nIdx] setAlpha:0];
+		[number[nIdx] setAlpha:1];
 	}
 	
 	[self myInit];
